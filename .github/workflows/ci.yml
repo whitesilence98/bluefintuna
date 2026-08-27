@@ -1,0 +1,44 @@
+# CI: build + lint on every push and pull request to main.
+# Node deps are cached via setup-node's cache: 'npm'. Fail fast — a red
+# check blocks the Vercel Production deployment (Vercel respects the
+# GitHub status check if you enable it under Project → Git → Checks).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-flight runs on the same ref when a new commit lands.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'          # caches ~/.npm based on package-lock.json
+
+      - name: Install dependencies
+        run: npm ci              # clean install from lockfile — fails if lock drifted
+
+      - name: Lint
+        run: npm run lint
+        continue-on-error: true  # ESLint isn't configured yet — gate once it is
+
+      - name: Build
+        run: npm run build       # the real gate: production build must pass
+        env:
+          # Vercel sets these at build; mirror so any NEXT_PUBLIC_ vars resolve.
+          NEXT_TELEMETRY_DISABLED: '1'

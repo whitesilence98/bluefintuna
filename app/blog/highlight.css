@@ -1,0 +1,64 @@
+/* GitHub-dark inspired theme for rehype-highlight (hljs tokens).
+   Kept small: only the token classes rehype-highlight emits. */
+
+.hljs {
+  color: #c9d1d9;
+  background: transparent;
+}
+.hljs-comment,
+.hljs-quote {
+  color: #8b949e;
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type,
+.hljs-name {
+  color: #ff7b72;
+}
+.hljs-string,
+.hljs-doctag,
+.hljs-regexp,
+.hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+.hljs-title,
+.hljs-section,
+.hljs-title.function_ {
+  color: #d2a8ff;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-property {
+  color: #79c0ff;
+}
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-link {
+  color: #f0883e;
+}
+.hljs-built_in,
+.hljs-builtin-name {
+  color: #ffa657;
+}
+.hljs-meta {
+  color: #8b949e;
+}
+.hljs-deletion {
+  color: #ffdcd7;
+  background: #67060c;
+}
+.hljs-addition {
+  color: #aff5b4;
+  background: #033a16;
+}
+.hljs-emphasis {
+  font-style: italic;
+}
+.hljs-strong {
+  font-weight: 700;
+}

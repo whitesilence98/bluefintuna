@@ -1,0 +1,104 @@
+---
+title: "ComfyUI Advanced Workflows: Node Architecture & Pipeline Design"
+date: "2026-08-21"
+excerpt: "A deep dive into ComfyUI's node graph architecture — building reproducible AI image pipelines, caching strategies, and optimization patterns for production-grade synthesis."
+tags: ["ComfyUI", "AI"]
+author: "Tuan Nguyen"
+---
+
+import { Alert } from '@/components/BlogMdx.jsx'
+
+ComfyUI is a node-based Stable Diffusion frontend where every image pipeline is a directed acyclic graph (DAG). Unlike monolithic UIs, the graph *is* the program — it's serializable, diffable, and reusable. This post walks through the architecture that makes that work and how to design pipelines that scale from one-off generations to repeatable production batches.
+
+## 1. The node graph as a DAG
+
+Every node is a pure function: inputs in, outputs out, no hidden state. The runtime topologically sorts the graph and executes once per `Queue Prompt`. Two properties fall out of this:
+
+- **Caching:** a node whose inputs haven't changed is skipped on re-run. Latent tensors are hashed and memoized.
+- **Reproducibility:** the JSON graph fully describes the generation. Save the graph, save the result.
+
+<Alert type="tip">
+Always keep the `.json` graph beside the output image. A PNG without its workflow is a guess; a workflow without its seed is a reroll.
+</Alert>
+
+## 2. A canonical latent pipeline
+
+A minimal txt2img pipeline has four stages, each a separate node so each can be swapped independently:
+
+1. **Load Checkpoint** → produces `MODEL`, `CLIP`, `VAE`
+2. **CLIP Text Encode** (prompt + negative prompt) → `CONDITIONING`
+3. **KSampler** → `LATENT`
+4. **VAE Decode** → `IMAGE`
+
+Splitting decode into its own node matters: you can run ten KSamplers from one latent, decode once, and compare seeds cheaply.
+
+## 3. Workflow JSON structure
+
+Below is the skeleton of a saved workflow. Notice every node is keyed by integer id and references its inputs by `[source_id, output_index]`:
+
+```json
+{
+  "3": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 8675309,
+      "steps": 28,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0,
+      "model": ["4", 0],
+      "positive": ["6", 0],
+      "negative": ["7", 0],
+      "latent_image": ["5", 0]
+    }
+  }
+}
+```
+
+That `[id, output_index]` tuple is the entire type system. `model` takes output slot 0 of node 4 — the runtime verifies the slot's type matches the input before queueing.
+
+## 4. Caching and re-execution
+
+The cache key is the hash of a node's *inputs*, not its id. If you change the seed on the KSampler, only the KSampler and its downstream nodes (VAE Decode, Save) re-run; the checkpoint, CLIP, and conditioning are reused. This is why iterating on prompts is nearly free after the first run.
+
+## 5. Optimization patterns
+
+### 5.1 Batch from a single latent
+
+Use a `LatentBatch` node to stack N latents before one decode. This decodes N images in one GPU pass instead of N passes — often a 3–5× speedup at the same quality.
+
+### 5.2 Two-pass upscale
+
+```js
+// Pass 1: low-res base generation
+sampler(denoise=1.0, steps=28) → latent_base  // 512×512
+
+// Pass 2: high-res refine, denoise < 1.0 keeps composition
+upscale(latent_base, 1.5)
+sampler(denoise=0.45, steps=20) → latent_hr  // 768×768
+```
+
+The second pass starts from the upscaled latent with `denoise=0.45` — high enough to add detail, low enough to preserve the composition from pass 1.
+
+### 5.3 LoRA stacking
+
+Each `Load LoRA` node returns a modified `MODEL`, so you can chain them:
+
+```text
+Checkpoint → LoRA(strength=0.8) → LoRA(strength=0.4) → KSampler
+```
+
+Strengths compound multiplicatively, so two LoRAs at 0.8 each don't add — they multiply to 0.64 effective weight on each.
+
+## 6. Versioning your graphs
+
+Treat workflows like code:
+
+- Commit the `.json` to git alongside prompts.
+- Pin checkpoint and LoRA hashes in the graph (ComfyUI stores SHAs, not just filenames).
+- Name seeds explicitly in comments — `seed: 123456 # golden-hour portrait` — so a re-roll is intentional, not accidental.
+
+## 7. Putting it together
+
+The payoff of the DAG model is that *a pipeline is a file*. You can diff it, review it in a PR, hand it to a batch worker, and reproduce the exact image six months later. That's the difference between "playing with models" and shipping a synthesis pipeline.

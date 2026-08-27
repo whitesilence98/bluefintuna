@@ -1,0 +1,155 @@
+---
+title: "LLM Prompt Engineering: From Templates to Local Deployment"
+date: "2026-08-14"
+excerpt: "A practical framework for prompt architecture — structured templates, few-shot patterns, context windows, and deploying local open-weights models with reproducible outputs."
+tags: ["LLMs", "AI"]
+author: "Tuan Nguyen"
+---
+
+import { Alert, Code } from '@/components/BlogMdx.jsx'
+
+Prompt engineering is API design where the interface is natural language. The model is a stateless function: string in, string out. Everything we call "prompting" — system messages, few-shot examples, output schemas — is really about constructing a reliable input contract for that function. This post covers the patterns I reach for in production, then closes with running the same prompts on a local model.
+
+## 1. The mental model
+
+Treat the LLM as a pure function:
+
+```text
+completion = f(system, context, user, examples)
+```
+
+Your job is to make `f` deterministic enough to build on. Determinism here is *behavioral*, not bit-for-bit — you want the same input to produce structurally equivalent output (same schema, same tone, same factuality) even when tokens differ.
+
+## 2. System message: the role contract
+
+The system message sets the function's *type signature*. Be explicit about role, scope, output format, and refusal behavior:
+
+```text
+SYSTEM:
+You are a strict data-extraction engine.
+- Input: a raw email body.
+- Output: JSON only, matching the schema below. No prose, no markdown.
+- If a field is absent, output null. Never invent values.
+- If the email is not an invoice, output {"_type": "none"}.
+
+SCHEMA:
+{ "vendor": string, "total": string, "currency": string,
+  "due_date": "YYYY-MM-DD" | null }
+```
+
+Two things do most of the work: naming the *role* (extraction engine, not "assistant") and pinning the *output format* (JSON, schema-bound). Vague system messages produce vague, chatty completions.
+
+## 3. Few-shot examples
+
+Examples are stronger than instructions when the task is fuzzy. Show the mapping you want, not just describe it:
+
+```text
+USER:  "Invoice from Acme, $420.00 due 2026-09-01"
+ASSISTANT: {"vendor":"Acme","total":"420.00","currency":"USD","due_date":"2026-09-01"}
+
+USER:  "Hey team, lunch on Friday?"
+ASSISTANT: {"_type":"none"}
+```
+
+<Alert type="tip">
+Keep three to five examples. One is an anecdote, five is a pattern. Beyond five you're spending context budget for diminishing returns — and you'll burn it all if any one example is ambiguous.
+</Alert>
+
+## 4. Output structure: force the format
+
+When you need structured data, ask for a format the model is already fluent in (JSON, XML, fenced code). Then *validate and retry* on the parse failure — don't hand-fix it.
+
+```js
+async function extract(raw) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    const out = await complete(prompt(raw));
+    const parsed = tryParseJSON(out);
+    if (parsed && schemaValid(parsed)) return parsed;
+    // Feed the parse error back so the model self-corrects.
+    raw = `${out}\n\n# Previous output failed: ${lastError}\nReturn valid JSON only.`;
+  }
+  throw new Error('extraction failed');
+}
+```
+
+The retry-with-error loop is the single highest-leverage pattern for production LLM code. It converts flaky "sometimes it adds ```json fences" behavior into reliable output.
+
+## 5. Context windows and ordering
+
+Models attend more strongly to the **start and end** of the prompt than the middle. Put the contract first (system + schema), the noisy retrieved context in the middle, and the actual instruction last:
+
+```text
+[ system / schema ]        ← high attention
+[ retrieved docs, long ]   ← the "lost in the middle" zone
+[ user instruction ]        ← high attention
+```
+
+If a retrieved document is critical, quote the relevant fragment in the user instruction too — don't rely on the model finding it in a 6k-token block.
+
+## 6. Determinism: temperature and seeds
+
+- `temperature: 0` for extraction, classification, structured output.
+- `temperature: 0.7–0.9` for drafting prose you'll edit.
+- Set a fixed `seed` for reproducible runs in evals — same seed + same params = same tokens (on most providers, modulo backend nondeterminism).
+
+## 7. Local deployment with Ollama
+
+Running open-weights models locally means no per-token cost, no data leaving the box, and full control over the runtime. Ollama wraps GGUF models behind an OpenAI-compatible API:
+
+```bash
+# Pull a model
+ollama pull llama3.1:8b-instruct-q5_K_M
+
+# Serve an OpenAI-compatible endpoint
+ollama serve   # → http://localhost:11434/v1
+```
+
+Point your existing client at it:
+
+```js
+import OpenAI from 'openai';
+
+const client = new OpenAI({
+  baseURL: 'http://localhost:11434/v1',
+  apiKey: 'ollama', // ignored, but the SDK requires it
+});
+
+const res = await client.chat.completions.create({
+  model: 'llama3.1:8b-instruct-q5_K_M',
+  temperature: 0,
+  messages: [
+    { role: 'system', content: SYSTEM_PROMPT },
+    { role: 'user', content: emailBody },
+  ],
+});
+```
+
+### Quantization trade-offs
+
+Quantization shrinks the model (and its quality) to fit consumer GPUs. The sweet spot for an 8B model on a 16GB card is `Q5_K_M` — near-FP16 quality at roughly a third the size:
+
+| Quant | ~Size (8B) | Quality | Use when |
+|-------|-----------|--------|----------|
+| F16   | 15 GB     | 100%   | you have the VRAM and want max quality |
+| Q8_0  | 8 GB      | ~99%   | safe default |
+| Q5_K_M| 5.5 GB    | ~97%   | **best balance for 8B on a 16GB card** |
+| Q4_K_M| 4.5 GB    | ~94%   | tight VRAM, tolerate quality loss |
+
+## 8. Building evals before prompts
+
+Before you tune a prompt, freeze an eval set — 20–50 input/output pairs you'd accept. Every prompt change is a commit measured against that set. Without evals, "the output looks better" is a vibe; with evals, it's a number.
+
+<Alert type="warn">
+Don't overfit to one model. A prompt that leans on GPT-class quirks often degrades on a local 8B model. Test the same prompt across at least one hosted model and one local one — the delta tells you what's instruction-following vs. what's memorized style.
+</Alert>
+
+## 9. Checklist before shipping
+
+- [ ] System message names the role and pins the output format
+- [ ] 3–5 few-shot examples covering the edge cases
+- [ ] Output parsed + schema-validated with retry-on-failure
+- [ ] Temperature and seed set deliberately, not by default
+- [ ] Critical context at the start and end, not "lost in the middle"
+- [ ] An eval set committed, prompt changes measured against it
+
+The unifying idea: **a prompt is a typed function**. Make the type explicit, validate the return value, and the rest is engineering.
