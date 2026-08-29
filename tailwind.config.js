@@ -21,8 +21,12 @@ module.exports = {
         gold: '#D4AF37',
       },
       fontFamily: {
-        sans: ['var(--font-inter)', 'system-ui', 'sans-serif'],
+        // Single typeface (Cormorant Garamond) for the whole project.
+        // All three tokens resolve to it so existing font-sans / font-serif /
+        // font-display classes keep working without per-file edits.
+        sans: ['var(--font-serif)', 'Georgia', 'serif'],
         serif: ['var(--font-serif)', 'Georgia', 'serif'],
+        display: ['var(--font-serif)', 'Georgia', 'serif'],
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       keyframes: {

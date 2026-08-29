@@ -5,12 +5,12 @@ import { motion } from 'framer-motion';
 // Skills split into their own section so each #section fits one viewport.
 const SKILL_GROUPS = [
   { label: 'Languages', items: ['TypeScript', 'JavaScript (ES6+)', 'Python', 'C#'] },
-  { label: 'Client', items: ['Next.js', 'Electron.js', 'React Native', 'Microfrontends', 'Redux/RTK', 'Zustand', 'XState', 'GraphQL'] },
-  { label: 'Backend', items: ['NestJS', 'Express.js', 'ASP.NET', 'REST', 'GraphQL', 'Microservices'] },
-  { label: 'Data', items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'TypeORM', 'Indexing'] },
-  { label: 'DevOps', items: ['Docker', 'CI/CD', 'Git', 'Vite', 'Webpack', 'Linux'] },
+  { label: 'Client', items: ['Next.js', 'Electron.js', 'React Native', 'Microfrontends', 'Redux/RTK', 'Zustand', 'XState', 'GraphQL', 'RESTful APIs', 'AWS SDK'] },
+  { label: 'Backend', items: ['NestJS', 'Express.js', 'ASP.NET', 'RESTful APIs', 'GraphQL', 'Microservices'] },
+  { label: 'Data', items: ['PostgreSQL', 'MySQL', 'MongoDB', 'Redis', 'TypeORM', 'Database Indexing'] },
+  { label: 'DevOps', items: ['Docker', 'CI/CD', 'Git', 'Vite', 'Webpack', 'Postman', 'Insomnia', 'Linux'] },
   { label: 'Testing', items: ['Jest', 'Vitest', 'React Testing Library', 'Cypress'] },
-  { label: 'AI', items: ['Ollama', 'Claude', 'Copilot', 'Prompt Engineering', 'AI-assisted Debugging'] },
+  { label: 'AI', items: ['Copilot', 'Ollama', 'Claude', 'Prompt Engineering', 'Log Analysis', 'AI-assisted Debugging'] },
 ];
 
 // Uppercase tracked-out category tag wrapped in vertical pipes (editorial style).

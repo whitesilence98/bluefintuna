@@ -1,0 +1,150 @@
+---
+title: "Writing a Claude Code Skill: a step-by-step guide"
+date: "2026-08-30"
+excerpt: "Claude Code skills are packaged instructions that make Claude repeatable. A practical, step-by-step walkthrough of authoring one — using a code-review skill as the worked example — from folder structure to invocation."
+tags: ["Claude", "Developer Tools", "AI"]
+author: "Tuan Nguyen"
+---
+
+import { Alert, Code } from '@/components/BlogMdx.jsx'
+
+A Claude Code **skill** is a packaged set of instructions that loads into the model's turn when invoked, replacing the default approach with a domain-specific workflow. Think of it as a reusable prompt component: write the instructions once, invoke them with <Code>/skill-name</Code>, and Claude follows that playbook instead of improvising.
+
+This post walks through authoring one, end to end, using a <Code>code-review</Code> skill as the worked example — the kind of internal tooling I build at work to keep review quality consistent across a team.
+
+## 1. What a skill actually is
+
+A skill is a folder on disk with a <Code>SKILL.md</Code> file inside it. That's the minimum. The file is Markdown with YAML frontmatter describing when and how the skill should run. When you type the skill's name, the harness loads <Code>SKILL.md</Code> into the conversation context and Claude follows it.
+
+```
+.claude/skills/
+└── code-review/
+    └── SKILL.md
+```
+
+That's the whole structure. No build step, no registry, no package manifest. You write Markdown; Claude reads it.
+
+## 2. The frontmatter contract
+
+The frontmatter tells the harness what the skill is and when to offer it. The fields that matter:
+
+```yaml
+---
+name: code-review
+description: Review the current diff for correctness bugs and reuse/efficiency cleanups. Runs at a configurable effort level; pass --fix to apply findings.
+allowed-tools: Read, Grep, Glob, Bash, Edit
+---
+```
+
+<Alert type="tip">
+<Code>description</Code> is the most important field — it's what Claude reads to decide whether the skill is relevant to your request. Write it like a one-line spec: what it does, what the inputs are, what it returns. Vague descriptions ("reviews code") get ignored; specific ones ("review the current git diff for correctness bugs at low/medium/high effort, apply with --fix") get matched.
+</Alert>
+
+<Code>allowed-tools</Code> scopes what the skill can do. A review skill needs to read files and search (<Code>Read</Code>, <Code>Grep</Code>, <Code>Glob</Code>) and, if it can apply fixes, edit (<Code>Edit</Code>) and run commands (<Code>Bash</Code>). Scoping tools is both a safety rail and a hint — it tells the model what the skill is *for*.
+
+## 3. Writing the instruction body
+
+The body of <Code>SKILL.md</Code> is the actual workflow. This is where you encode the playbook. The best skills read like a senior engineer's review checklist — specific, ordered, and explicit about tradeoffs. Here's the structure I reach for:
+
+```markdown
+## Steps
+
+1. Identify the diff. Run `git diff` to find changed files; if a branch or
+   PR is named, resolve it to a diff range. Skip generated files
+   (.next/, node_modules/, lockfile churn).
+2. For each changed file, read enough surrounding context to understand the
+   change — not just the diff hunk. A one-line edit in a state machine needs
+   the whole machine.
+3. Review for correctness first: off-by-one, null/undefined, race conditions,
+   broken invariants, wrong boundary conditions.
+4. Then review for reuse/simplification: duplicated logic, reinvented helpers,
+   dead code, unnecessary abstraction.
+5. Rank findings by severity. Only report the ones you'd act on — a nitpick
+   flood is noise. If effort is `low`/`medium`, keep only high-confidence
+   findings; at `high`/`max`, include plausible but uncertain ones, flagged.
+6. If --fix was passed, apply the fixes and show the diffs. Otherwise, report
+   findings as a ranked list with file:line anchors.
+```
+
+A few principles that make the body land:
+
+**Be imperative, not descriptive.** "Run <Code>git diff</Code>" beats "you should look at the changes." Claude follows instructions; instructions are verbs.
+
+**Encode the *stop* conditions, not just the *go* conditions.** The line <Code>"skip generated files (.next/, node_modules/, lockfile churn)"</Code> is what stops the skill from reviewing 10,000 lines of build output. The constraints are more valuable than the steps.
+
+**Specify the output format.** "A ranked list with file:line anchors" tells Claude exactly what to hand back. Without it you get prose paragraphs that are hard to act on.
+
+## 4. Handling arguments
+
+Skills receive their invocation arguments in the turn. For a review skill, the argument is usually the effort level or a <Code>--fix</Code> flag. You handle this by telling Claude how to parse it in the instructions:
+
+```markdown
+## Arguments
+
+- No argument or `low`/`medium`: fewer, high-confidence findings only.
+- `high` or `max`: broader coverage; include plausible-but-uncertain findings,
+  clearly flagged as such.
+- `--fix`: apply the fixes to the working tree after reporting.
+- `--comment`: post findings as inline PR comments (requires gh CLI auth).
+```
+
+The model reads this and resolves the argument from your <Code>/code-review high --fix</Code> invocation. No argument parsing code — it's just instructions.
+
+## 5. Optional: reference files
+
+For non-trivial skills, you can add reference Markdown files alongside <Code>SKILL.md</Code> and reference them from the instructions. This keeps the main file scannable while letting deep material live in a separate file the skill can read on demand.
+
+```
+.claude/skills/
+└── code-review/
+    ├── SKILL.md
+    └── references/
+        └── severity-rubric.md
+```
+
+In <Code>SKILL.md</Code>: <Code>"For severity ranking, see references/severity-rubric.md."</Code> Claude loads the reference only when the instruction points to it — so the rubric doesn't bloat context on every invocation, just when it's relevant.
+
+<Alert type="warn">
+Don't over-engineer the reference structure. Most skills are one file. Reach for references only when the main file would be unwieldy — a review checklist with 40 detailed rules, a migration guide with per-version steps. If <Code>SKILL.md</Code> stays under ~150 lines, keep it all in one file.
+</Alert>
+
+## 6. Invoking it
+
+Once the folder exists, the skill is available. Invoke it by name:
+
+```text
+/code-review              # default effort
+/code-review high         # broader coverage
+/code-review --fix        # apply the fixes
+```
+
+The harness matches the name, loads <Code>SKILL.md</Code>, and Claude runs the playbook. There's no registration step, no restart, no build. Edit the file and the next invocation uses the new version.
+
+## 7. Iterating
+
+Skills are prompts, and prompts need iteration. The loop:
+
+1. Invoke the skill on a real diff.
+2. Read the output. Anything it missed → add a step. Anything it got wrong → add a constraint.
+3. Anything verbose that wasn't useful → it's a sign the instruction is vague; make it specific.
+
+The fastest way to a good skill is running it on real work and reading the failures. A skill that says "review for bugs" will miss race conditions; a skill that says "check for concurrent state mutation in async handlers and event callbacks" will catch them. Specificity is the lever.
+
+## 8. When to write a skill (and when not)
+
+Write a skill when:
+
+- You repeat the same multi-step workflow and want it consistent.
+- The workflow has non-obvious *stop* conditions Claude wouldn't guess.
+- You want team-shared review/migration/deploy playbooks.
+
+Don't write a skill when:
+
+- A one-shot prompt does the job. Skills are for *reusable* workflows, not single tasks.
+- The task is creative or exploratory — a skill's rigidity hurts there.
+
+The <Code>code-review</Code> skill earns its keep because review is repetitive, the checklist is stable, and the *stop* conditions (skip generated files, rank by severity, only report what you'd act on) are the exact things a default prompt gets wrong.
+
+## Closing
+
+The mental model that made skills click for me: a skill is a function, <Code>SKILL.md</Code> is its implementation, the frontmatter is its type signature, and the arguments are its parameters. You write it once, invoke it by name, and it runs the same playbook every time — which, if your work is building the tooling around engineering, is a satisfying convergence. The skill that reviewed this very post is the one it describes.

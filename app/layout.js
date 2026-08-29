@@ -1,28 +1,19 @@
-import { Inter, Sora, Cormorant_Garamond } from 'next/font/google';
+import { Cormorant_Garamond } from 'next/font/google';
 import './globals.css';
 import ScrollProgress from '@/components/ScrollProgress';
 import Toaster from '@/components/Toaster';
 
-// Zero render-blocking: self-hosted via next/font, no external request at runtime.
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
-
-const sora = Sora({
-  subsets: ['latin'],
-  display: 'swap',
-  weight: ['600', '700', '800'],
-  variable: '--font-display',
-});
-
-// Editorial serif for major headlines (h1/h2, section titles).
+// Single typeface for the entire project. Cormorant Garamond is an editorial
+// serif that carries the espresso aesthetic at headline scale; we load a wide
+// weight range so body copy at 300–400 stays legible. All three font tokens
+// (sans/serif/display) map to it so existing utility classes keep working.
+// Self-hosted via next/font — no external runtime font request.
 const cormorant = Cormorant_Garamond({
   subsets: ['latin'],
   display: 'swap',
-  weight: ['400', '500', '600', '700'],
+  weight: ['300', '400', '500', '600', '700'],
   variable: '--font-serif',
+  style: ['normal', 'italic'],
 });
 
 const siteUrl = 'https://bluefintuna.vercel.app';
@@ -147,7 +138,7 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className={`${inter.variable} ${sora.variable} ${cormorant.variable}`}>
+    <html lang="en" className={cormorant.variable}>
       <body className="font-sans bg-espresso-950 text-ink antialiased">
         <script
           type="application/ld+json"
