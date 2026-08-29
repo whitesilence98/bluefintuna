@@ -81,7 +81,7 @@ export default function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <CategoryTag>Senior Software Engineer &amp; Systems Architect</CategoryTag>
+        <CategoryTag>Senior Software Engineer</CategoryTag>
 
         <h1 className="grunge-text mt-6 font-serif text-5xl font-semibold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
           Engineering
@@ -89,17 +89,13 @@ export default function Hero() {
           <span className="text-champagne">enterprise-scale</span> systems
         </h1>
 
-        {/* Tagline: outcome + domain — no title words, no years. */}
+        {/* Elevator pitch: value proposition in two sentences — no title words,
+            no years (those live in the tag above and the stats sidebar). */}
         <p className="mt-6 max-w-md text-base leading-relaxed text-sand sm:text-lg">
           Decoupling client engines from high-throughput backends at enterprise
           scale — modular web, Electron desktop, and microservice integration.
-        </p>
-
-        {/* Summary: philosophy + where value lands — no title, no years, no list. */}
-        <p className="mt-4 max-w-md text-sm leading-relaxed text-sand/70">
-          I focus on the integration boundary — where modular surfaces meet
-          distributed services — and make it the part that speeds up, not the
-          part that slows teams down.
+          The seam between them is usually where delivery slows; I make it the
+          part that speeds teams up.
         </p>
 
         {/* Dual CTA: champagne primary + dark ghost secondary. */}

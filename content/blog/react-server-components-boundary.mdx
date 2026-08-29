@@ -1,0 +1,83 @@
+---
+title: "React Server Components: owning the server/client boundary"
+date: "2026-08-29"
+excerpt: "RSC isn't a rendering optimization — it's an architecture primitive. A field-notes take on the server/client boundary, what belongs where, and why it mirrors the integration seams I build at work."
+tags: ["React", "Next.js", "Architecture"]
+author: "Tuan Nguyen"
+---
+
+import { Alert, Code } from '@/components/BlogMdx.jsx'
+
+React Server Components arrived framed as a performance feature — ship less JavaScript, render on the server, hydrate only what needs to be interactive. That's true, but it undersells what RSC actually is: **a first-class boundary between two runtimes**, enforced by the framework instead of negotiated by convention.
+
+If you've spent time integrating modular frontends with backend services, that framing should sound familiar. The hardest part of that work is rarely the code on either side — it's deciding what belongs on which side of the seam. RSC makes that decision explicit.
+
+## 1. Two runtimes, one tree
+
+A Server Component runs where data lives: Node, the edge, wherever your bundler sends it. It can touch the filesystem, read a database, hold secrets. It cannot hold state, use hooks, or touch the browser.
+
+A Client Component runs where the user is. It can hold state, use hooks, touch the DOM, talk to Web APIs. It cannot reach your database — and it shouldn't, because once code is on the client, everything in it is public and runs on a machine you don't control.
+
+```text
+Server Component        Client Component
+─────────────────       ─────────────────
+fs, db, secrets         useState, useEffect
+async data fetch        DOM, WebGL, events
+zero client JS           ships to the browser
+```
+
+The `'use client'` directive isn't a toggle that "makes a component interactive." It's a **contract declaration**: *everything below this line runs on a machine I don't own.* That reframing changes how you structure a feature.
+
+## 2. What goes where
+
+The rule I use:
+
+> Put data and secrets as close to the server as the tree allows. Put interactivity as close to the leaves as you can get away with.
+
+Concretely:
+
+- **Data fetching** → Server Component. This is the highest-leverage move. A server-side fetch doesn't serialise into a client bundle, doesn't leak API keys, and doesn't add a round-trip from the user's machine to your data layer. Your Next.js `app/page.js` calling `getRecentPosts()` server-side is exactly this — the blog list arrives as HTML, not as a client-side `useEffect` + fetch.
+- **Heavy static rendering** → Server Component. A markdown renderer, a syntax highlighter, a table of contents built from headings — all pure transforms of data you already have server-side. Shipping them as client JS buys you nothing and costs bundle size.
+- **State, events, WebGL, browser APIs** → Client Component. A contact form with validation state, a Three.js canvas, a magnetic-button spring — these need the browser. Mark them `'use client'` and keep them at the leaves.
+
+<Alert type="tip">
+The boundary is a one-way door: a Server Component can render a Client Component, but a Client Component can't render a Server Component as a child (it can pass one in as a `children` prop — that's the escape hatch).
+</Alert>
+
+## 3. The seam that looks familiar
+
+Here's why I keep coming back to the boundary framing. At Razer's NPI team, the work that mattered wasn't any single module — it was the integration surface between modular frontends, desktop UI, and the microservices underneath. The hard questions were always *what crosses the seam, in which direction, and who owns the contract.*
+
+RSC is the same problem at a smaller scale. The server/client boundary is a contract surface, and the `'use client'` directive is its API. When you push a component to the client, you're making a decision about:
+
+- **What data crosses the wire** (and gets cached, indexed, or inspected)
+- **What latency the user pays for** (server work is free to the user's battery; client work isn't)
+- **What your security perimeter is** (anything on the client is outside it)
+
+That's the same calculus as "does this module talk to the microservice directly, or through a contract?" — just applied to the browser instead of the network.
+
+## 4. Patterns I reach for
+
+**Push data to the server, pass it down as props.** Instead of a client component fetching its own data, fetch in a Server Component parent and pass the result as props. The data serialises as part of the server-rendered HTML; the client component stays a pure function of its props.
+
+**Keep Client Components leaf-shaped.** A client component that imports other client components is fine. A client component that *would* import a server-only utility is a sign you've drawn the boundary too high — push that utility's work into a Server Component parent and pass the result down.
+
+**Use `children` to thread server content through client wrappers.** If you need a client-side interactive shell (a tab switcher, a collapsible) around server-rendered content, don't move the content to the client. Render the content in a Server Component and pass it as `children` to the Client Component wrapper. The content stays server-rendered; only the shell hydrates.
+
+<Alert type="warn">
+Watch your imports. A Server Component that accidentally imports a file with `'use client'` somewhere in its graph is usually fine — but a Client Component that imports a server-only module (anything touching <Code>fs</Code> or <Code>process.env</Code> secrets) will either fail to build or leak the import into the client bundle. Keep server-only code in <Code>lib/</Code> files you only import from Server Components.
+</Alert>
+
+## 5. Where RSC stops being free
+
+RSC has real costs, and pretending otherwise leads to bad architecture:
+
+- **The boundary is not free to reason about.** Two runtimes means two mental models. Junior teams often end up with "everything is a client component because that's what works," which gives up the model entirely. The boundary is only worth it if you actually push work to the server.
+- **Not every app benefits.** A heavily interactive SPA with thin data needs — a design tool, a canvas editor — gets little from RSC and pays the boundary tax. RSC shines on content-and-data surfaces: marketing, dashboards, docs, portfolios.
+- **Caching is now your job.** Next.js App Router gives you powerful fetch caching, but "powerful" here means "footgun." A stale cache on a server component is harder to debug than a refetch on the client, because the user can't see it happen.
+
+## Closing
+
+The reason RSC stuck with me isn't the bundle size — though that's nice — it's that it gave me a vocabulary for a decision I was already making every day: *what belongs on which side of the seam.* Once you start treating `'use client'` as a contract declaration instead of a feature flag, the architecture of an App Router app starts to look like a well-factored integration surface. And if your work is building those surfaces for a living, that's a satisfying convergence.
+
+The portfolio you're reading this on is built that way: server-rendered MDX, a server-side post list, and a client-only Three.js canvas pushed to the leaves. It's a small example, but it's the same seam.
