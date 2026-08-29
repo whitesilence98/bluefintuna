@@ -50,6 +50,7 @@ function Emblem({ className = '' }) {
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   // Lock body scroll while drawer is open.
   useEffect(() => {
@@ -59,8 +60,31 @@ export default function Navbar() {
     };
   }, [open]);
 
+  // Add a translucent espresso backdrop + blur once the user scrolls past the
+  // top, so page content no longer shows through the fixed navbar. Also slides
+  // in a thin bottom border for definition. Respects reduced-motion via CSS.
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll(); // set initial state (e.g. on route change / refresh mid-page)
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <header className="fixed inset-x-0 top-0 z-50">
+      {/* Animated backdrop: fades + slides in on scroll so content underneath
+          is hidden once you leave the hero. Pointer events disabled so it
+          never blocks clicks when invisible. */}
+      <motion.div
+        aria-hidden
+        initial={false}
+        animate={{
+          opacity: scrolled ? 1 : 0,
+          y: scrolled ? 0 : -8,
+        }}
+        transition={{ duration: 0.25, ease: 'easeOut' }}
+        className="pointer-events-none absolute inset-0 -z-10 border-b border-rule bg-espresso-950/80 backdrop-blur-md"
+      />
       <nav
         className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5"
         aria-label="Primary"
