@@ -1,10 +1,10 @@
 'use client';
 
 import dynamic from 'next/dynamic';
-import { Suspense, useState } from 'react';
+import { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, Phone, MapPin, ArrowUpRight, Check, Copy } from 'lucide-react';
-import { toast } from '@/lib/toast';
+import { Github, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
+import { STATS } from '@/lib/stats';
 import MagneticButton from '@/components/MagneticButton';
 
 // Lazy-load the WebGL canvas so it never blocks first paint / LCP.
@@ -47,26 +47,6 @@ function CategoryTag({ children }) {
   );
 }
 
-// Thin icon + label row for the sub-metadata contact card.
-function MetaRow({ Icon, children, href }) {
-  const content = (
-    <>
-      <Icon size={14} strokeWidth={1.5} className="text-champagne/80" />
-      <span className="truncate">{children}</span>
-    </>
-  );
-  return href ? (
-    <a
-      href={href}
-      className="flex items-center gap-2.5 text-xs text-sand/80 transition-colors hover:text-ink"
-    >
-      {content}
-    </a>
-  ) : (
-    <div className="flex items-center gap-2.5 text-xs text-sand/80">{content}</div>
-  );
-}
-
 // Vertical stat block for the right sidebar.
 function StatBlock({ value, label, last }) {
   return (
@@ -81,48 +61,12 @@ function StatBlock({ value, label, last }) {
   );
 }
 
-// Email row with copy-to-clipboard: clicking the icon copies the address and
-// fires a toast. The mailto: link still opens on label click.
-const EMAIL = '98tuannguyen@gmail.com';
-
-function CopyEmail() {
-  const [copied, setCopied] = useState(false);
-
-  async function copy(e) {
-    e.preventDefault();
-    try {
-      await navigator.clipboard.writeText(EMAIL);
-      setCopied(true);
-      toast('Copied to clipboard', { tone: 'success' });
-      setTimeout(() => setCopied(false), 1800);
-    } catch {
-      toast('Copy failed — long-press to copy', { tone: 'info' });
-    }
-  }
-
-  return (
-    <div className="flex items-center gap-2.5 text-xs text-sand/80">
-      <a href={`mailto:${EMAIL}`} className="inline-flex items-center gap-2.5 truncate transition-colors hover:text-ink">
-        <Mail size={14} strokeWidth={1.5} className="text-champagne/80" />
-        <span className="truncate">{EMAIL}</span>
-      </a>
-      <button
-        onClick={copy}
-        aria-label="Copy email to clipboard"
-        className="shrink-0 text-sand/50 transition-colors hover:text-champagne"
-      >
-        {copied ? <Check size={13} strokeWidth={2.5} className="text-champagne" /> : <Copy size={13} />}
-      </button>
-    </div>
-  );
-}
-
 export default function Hero() {
   return (
     <section
       id="home"
       aria-label="Hero"
-      className="relative mx-auto flex min-h-screen max-w-7xl flex-col gap-12 px-6 pb-24 pt-28 md:pt-32 lg:grid lg:grid-cols-[1.05fr_1.2fr_0.5fr] lg:items-stretch lg:gap-8"
+      className="relative mx-auto flex max-w-7xl flex-col gap-8 px-6 py-20 lg:h-[calc(100vh-4rem)] lg:grid lg:grid-cols-[1.05fr_1.2fr_0.5fr] lg:items-stretch lg:gap-8 lg:overflow-hidden"
     >
       {/* Ambient warm radial spotlight behind the center 3D character. */}
       <div
@@ -137,19 +81,25 @@ export default function Hero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
       >
-        <CategoryTag>Senior Software Engineer</CategoryTag>
+        <CategoryTag>Senior Software Engineer &amp; Systems Architect</CategoryTag>
 
         <h1 className="grunge-text mt-6 font-serif text-5xl font-semibold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
-          I&apos;m a Web Engineer
+          Engineering
           <br />
-          &amp; <span className="italic text-champagne">AI Workflows</span> Builder
+          <span className="text-champagne">enterprise-scale</span> systems
         </h1>
 
+        {/* Tagline: outcome + domain — no title words, no years. */}
         <p className="mt-6 max-w-md text-base leading-relaxed text-sand sm:text-lg">
-          6+ years architecting global-scale web, Electron desktop, and modular
-          systems for enterprise brands — connecting client engines to
-          high-throughput microservices, and pioneering local AI workflows for
-          faster engineering.
+          Decoupling client engines from high-throughput backends at enterprise
+          scale — modular web, Electron desktop, and microservice integration.
+        </p>
+
+        {/* Summary: philosophy + where value lands — no title, no years, no list. */}
+        <p className="mt-4 max-w-md text-sm leading-relaxed text-sand/70">
+          I focus on the integration boundary — where modular surfaces meet
+          distributed services — and make it the part that speeds up, not the
+          part that slows teams down.
         </p>
 
         {/* Dual CTA: champagne primary + dark ghost secondary. */}
@@ -177,40 +127,39 @@ export default function Hero() {
           </MagneticButton>
         </div>
 
-        {/* Sub-metadata cards: quick contact + socials. */}
-        <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          <div className="rounded-xl border border-rule bg-espresso-900/60 p-5">
-            <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-sand/50">
-              Quick Contact
-            </p>
-            <div className="space-y-2.5">
-              <CopyEmail />
-              <MetaRow Icon={Phone} href="tel:+84976649000">
-                +84 976 649 000
-              </MetaRow>
-              <MetaRow Icon={MapPin}>Ho Chi Minh, Vietnam</MetaRow>
-            </div>
-          </div>
-
-          <div className="rounded-xl border border-rule bg-espresso-900/60 p-5">
-            <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.3em] text-sand/50">
-              Socials
-            </p>
-            <div className="space-y-2.5">
-              <MetaRow Icon={Github} href="https://github.com/whitesilence98">
-                github.com/whitesilence98
-              </MetaRow>
-              <MetaRow Icon={Linkedin} href="https://linkedin.com/in/tuan-nguyend">
-                linkedin.com/in/tuan-nguyend
-              </MetaRow>
-            </div>
-          </div>
+        {/* Compact icon social strip — contact details live in #contact. */}
+        <div className="mt-9 flex items-center gap-5">
+          <a
+            href="mailto:98tuannguyen@gmail.com"
+            aria-label="Email"
+            className="text-sand/70 transition-colors hover:text-champagne"
+          >
+            <Mail size={20} strokeWidth={1.75} />
+          </a>
+          <a
+            href="https://github.com/whitesilence98"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="GitHub"
+            className="text-sand/70 transition-colors hover:text-champagne"
+          >
+            <Github size={20} strokeWidth={1.75} />
+          </a>
+          <a
+            href="https://linkedin.com/in/tuan-nguyend"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="LinkedIn"
+            className="text-sand/70 transition-colors hover:text-champagne"
+          >
+            <Linkedin size={20} strokeWidth={1.75} />
+          </a>
         </div>
       </motion.div>
 
-      {/* CENTER COLUMN: interactive 3D canvas — full height, warm-lit. */}
+      {/* CENTER COLUMN: interactive 3D canvas — fills the hero height on lg. */}
       <motion.div
-        className="relative h-[60vh] w-full sm:h-[70vh] lg:h-auto lg:min-h-[82vh]"
+        className="relative h-[55vh] w-full min-h-0 lg:h-full"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8, delay: 0.2, ease: 'easeOut' }}
@@ -224,7 +173,7 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,#0E0C0A_80%)]" />
       </motion.div>
 
-      {/* RIGHT COLUMN: vertical stats sidebar. */}
+      {/* RIGHT COLUMN: vertical stats sidebar — single source in lib/stats.js */}
       <motion.aside
         className="hidden flex-col justify-center gap-8 border-l border-rule pl-6 lg:flex"
         initial={{ opacity: 0, x: 12 }}
@@ -232,10 +181,9 @@ export default function Hero() {
         transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
         aria-label="Career stats"
       >
-        <StatBlock value="6+" label="Years of experience" />
-        <StatBlock value="4,000+" label="Defects triaged" />
-        <StatBlock value="40%" label="Payload reduction" />
-        <StatBlock value="25%" label="Faster delivery" last />
+        {STATS.map((s, i) => (
+          <StatBlock key={s.k} value={s.k} label={s.v} last={i === STATS.length - 1} />
+        ))}
       </motion.aside>
     </section>
   );

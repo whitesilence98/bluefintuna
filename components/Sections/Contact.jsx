@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Github, Linkedin, Mail, Phone, MapPin, Send, Check, AlertCircle } from 'lucide-react';
+import { Github, Linkedin, Mail, Phone, MapPin, Send, Check, Copy, AlertCircle } from 'lucide-react';
 import { toast } from '@/lib/toast';
 
 const CONTACT = {
@@ -18,6 +18,32 @@ const SOCIALS = [
   { label: 'GitHub', href: CONTACT.github, Icon: Github },
   { label: 'LinkedIn', href: CONTACT.linkedin, Icon: Linkedin },
 ];
+
+// Copy-to-clipboard affordance next to the email row. Copies the address and
+// fires a toast; falls back gracefully if the Clipboard API is unavailable.
+function CopyEmailButton() {
+  const [copied, setCopied] = useState(false);
+  async function copy(e) {
+    e.preventDefault();
+    try {
+      await navigator.clipboard.writeText(CONTACT.email);
+      setCopied(true);
+      toast('Copied to clipboard', { tone: 'success' });
+      setTimeout(() => setCopied(false), 1800);
+    } catch {
+      toast('Copy failed — long-press to copy', { tone: 'info' });
+    }
+  }
+  return (
+    <button
+      onClick={copy}
+      aria-label="Copy email to clipboard"
+      className="shrink-0 text-sand/50 transition-colors hover:text-champagne"
+    >
+      {copied ? <Check size={14} strokeWidth={2.5} className="text-champagne" /> : <Copy size={14} />}
+    </button>
+  );
+}
 
 // Initial empty form state.
 const EMPTY = { name: '', email: '', subject: '', message: '' };
@@ -145,7 +171,7 @@ export default function Contact() {
     <section
       id="contact"
       aria-label="Contact"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col px-6 py-20"
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
         {/* Left: intro + quick facts + socials */}
@@ -183,6 +209,7 @@ export default function Contact() {
               <a href={`mailto:${CONTACT.email}`} className="hover:text-champagne">
                 {CONTACT.email}
               </a>
+              <CopyEmailButton />
             </li>
           </ul>
 

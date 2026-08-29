@@ -29,7 +29,7 @@ export default function Skills() {
     <section
       id="skills"
       aria-label="Skills"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col px-6 py-20"
     >
       <div className="mb-10">
         <CategoryTag>Technical Skills</CategoryTag>

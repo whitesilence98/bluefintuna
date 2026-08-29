@@ -83,7 +83,7 @@ function TimelineCard({ role, index, isOpen, onToggle }) {
       {/* Timeline node */}
       <span
         aria-hidden
-        className="absolute -left-[33px] top-2 flex h-3.5 w-3.5 items-center justify-center rounded-full border border-champagne bg-espresso-950 sm:-left-[41px]"
+        className="absolute -left-[33px] top-2 flex h-3.5 w-3.5 items-center rounded-full border border-champagne bg-espresso-950 sm:-left-[41px]"
       >
         <span className="h-1.5 w-1.5 rounded-full bg-champagne" />
       </span>
@@ -200,7 +200,7 @@ export default function Experience() {
     <section
       id="experience"
       aria-label="Experience"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
     >
       <div className="mb-10">
         <CategoryTag>Professional Experience</CategoryTag>

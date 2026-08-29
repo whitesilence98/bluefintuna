@@ -15,7 +15,7 @@ export default function BlogLayout({ children }) {
       <Navbar />
       <main className="min-h-screen pt-24">{children}</main>
       <footer className="border-t border-rule px-6 py-10 text-center text-xs text-sand/50">
-        © {new Date().getFullYear()} Tuan Nguyen. Built with Next.js &amp; React Three Fiber.
+        © {new Date().getFullYear()} Tuan Nguyen.
       </footer>
     </>
   );

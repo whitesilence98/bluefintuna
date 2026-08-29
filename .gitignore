@@ -55,3 +55,8 @@ tmp/
 # ── Testing ──────────────────────────────────────────────────
 coverage/
 .nyc_output/
+
+# ── Claude Code (local agent state — CLAUDE.md itself stays tracked) ──
+.claude/
+.claude.local/
+CLAUDE.md

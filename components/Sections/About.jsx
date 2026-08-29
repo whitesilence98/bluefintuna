@@ -1,14 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-
-// Stats live here; skills moved to <Skills/>.
-const STATS = [
-  { k: '6+', v: 'Years engineering production software' },
-  { k: '4,000+', v: 'Defects triaged, 100% QA pass rate' },
-  { k: '40%', v: 'API payload reduction via query optimization' },
-  { k: '25%', v: 'Faster delivery through cross-functional integration' },
-];
+import { STATS } from '@/lib/stats';
 
 function CategoryTag({ children }) {
   return (
@@ -25,7 +18,7 @@ export default function About() {
     <section
       id="about"
       aria-label="About"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col px-6 py-20"
     >
       <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
         <motion.div
@@ -36,22 +29,21 @@ export default function About() {
         >
           <CategoryTag>About Me</CategoryTag>
           <h2 className="grunge-text mt-5 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-            Engineering software
+            The seam that
             <br />
-            that <span className="italic text-champagne">millions</span> rely on
+            <span className="text-champagne">speeds teams up</span>
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-sand">
-            I&apos;m a Senior Software Engineer with 6+ years architecting and
-            delivering global-scale web, Electron desktop, and modular
-            application systems for enterprise brands like Razer.
+            I focus on the integration boundary — the place where modular web and
+            Electron desktop surfaces meet distributed services. The work is
+            making that boundary invisible: clean contracts, independent
+            deployments, and quality bars that hold under release pressure.
           </p>
           <p className="mt-4 max-w-xl text-sand/70">
-            My focus is end-to-end systems integration — connecting
-            client-side engines with high-throughput microservices and
-            distributed backends. I&apos;m an early adopter of local AI
-            workflows (Ollama, Claude) for automated debugging and faster
-            engineering velocity, and I mentor engineers across cross-functional
-            architecture.
+            For teams shipping hardware-adjacent software, that seam is usually
+            where delivery slows down. I make it the part that speeds up —
+            owning the contracts between firmware, mechanical, and QA units so
+            modules ship independently and integrate cleanly.
           </p>
         </motion.div>
 

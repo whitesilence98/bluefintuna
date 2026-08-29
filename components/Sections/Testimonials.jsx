@@ -64,7 +64,7 @@ export default function Testimonials() {
     <section
       id="testimonials"
       aria-label="Recommendations"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col px-6 py-20"
     >
       <div className="mb-10 text-center">
         <div className="flex justify-center">
