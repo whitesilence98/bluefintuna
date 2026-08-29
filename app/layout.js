@@ -97,10 +97,9 @@ export const metadata = {
       'max-video-preview': -1,
     },
   },
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/apple-icon.png',
-  },
+  // Icons are served via Next.js file-based metadata:
+  // app/icon.svg (browser tab) and app/apple-icon.png (Apple touch).
+  // No manual /favicon.ico reference — Next handles it automatically.
 };
 
 export default function RootLayout({ children }) {

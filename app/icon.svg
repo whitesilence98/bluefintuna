@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24">
+  <!-- Espresso rounded background so the star reads in light AND dark tab bars -->
+  <rect width="24" height="24" rx="5" fill="#0E0C0A" />
+  <!-- Eight-point compass star — same path as components/Navbar.jsx Emblem -->
+  <path d="M12 2 L13.5 9.5 L21 11 L13.5 12.5 L12 20 L10.5 12.5 L3 11 L10.5 9.5 Z" fill="#C5A059" opacity="0.92" />
+  <circle cx="12" cy="11" r="1.6" fill="#0E0C0A" opacity="0.7" />
+</svg>
