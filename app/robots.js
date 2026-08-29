@@ -1,6 +1,6 @@
 export default function robots() {
   return {
     rules: { userAgent: '*', allow: '/' },
-    sitemap: 'https://tuannguyen.com/sitemap.xml',
+    sitemap: 'https://bluefintuna.vercel.app/sitemap.xml',
   };
 }

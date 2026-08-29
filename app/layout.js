@@ -25,7 +25,7 @@ const cormorant = Cormorant_Garamond({
   variable: '--font-serif',
 });
 
-const siteUrl = 'https://tuannguyen.com';
+const siteUrl = 'https://bluefintuna.vercel.app';
 
 export const viewport = {
   themeColor: '#0E0C0A',
@@ -40,7 +40,7 @@ export const metadata = {
     template: '%s · Tuan Nguyen',
   },
   description:
-    'Portfolio of Tuan Nguyen, a Senior Software Engineer with 6+ years architecting global-scale web, Electron desktop, and modular systems for enterprise brands. TypeScript, React, Next.js, microservices, and local AI workflows.',
+    'Senior Software Engineer with 6+ years architecting modular web, Electron desktop, and microservice systems for enterprise brands like Razer. TypeScript, React, Next.js, Electron, and systems integration.',
   keywords: [
     'Tuan Nguyen',
     'Nguyen Duc Tuan',
@@ -69,21 +69,14 @@ export const metadata = {
     title: 'Tuan Nguyen — Senior Software Engineer',
     description:
       'Senior Software Engineer architecting global-scale web, desktop, and modular systems — TypeScript, React, Next.js, microservices, and local AI workflows.',
-    images: [
-      {
-        url: '/og.png',
-        width: 1200,
-        height: 630,
-        alt: 'Tuan Nguyen — Senior Software Engineer',
-      },
-    ],
+    // Drop a 1200×630 PNG at public/og.png to fill the social card.
+    images: [{ url: '/og.png', width: 1200, height: 630, alt: 'Tuan Nguyen — Senior Software Engineer' }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Tuan Nguyen — Senior Software Engineer',
     description:
       'Senior Software Engineer — TypeScript, React, Next.js, Electron, microservices, and local AI workflows (Ollama, Claude).',
-    images: ['/og.png'],
     creator: '@whitesilence98',
   },
   robots: {
@@ -129,9 +122,24 @@ export default function RootLayout({ children }) {
       'NestJS',
       'GraphQL',
       'PostgreSQL',
+      'AWS',
+      'Docker',
       'Ollama',
       'AI-assisted debugging',
     ],
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'University of Information Technology',
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Ho Chi Minh City',
+        addressCountry: 'VN',
+      },
+    },
+    worksFor: {
+      '@type': 'Organization',
+      name: 'S3 Corporation',
+    },
     sameAs: [
       'https://github.com/whitesilence98',
       'https://www.linkedin.com/in/tuan-nguyend',

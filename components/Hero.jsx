@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { Github, Linkedin, Mail, ArrowUpRight } from 'lucide-react';
-import { STATS } from '@/lib/stats';
+import { PROFILE } from '@/lib/profile';
 import MagneticButton from '@/components/MagneticButton';
 
 // Lazy-load the WebGL canvas so it never blocks first paint / LCP.
@@ -47,16 +47,14 @@ function CategoryTag({ children }) {
   );
 }
 
-// Vertical stat block for the right sidebar.
-function StatBlock({ value, label, last }) {
+// Labeled profile row for the right sidebar (Role / Focus / Based).
+function ProfileRow({ label, value }) {
   return (
-    <div className={last ? '' : 'border-b border-rule pb-6'}>
-      <div className="font-serif text-4xl font-semibold leading-none text-ink">
-        {value}
-      </div>
-      <div className="mt-2 text-[11px] uppercase tracking-[0.25em] text-sand/60">
+    <div>
+      <div className="text-[11px] uppercase tracking-[0.25em] text-sand/60">
         {label}
       </div>
+      <div className="mt-1 text-sm text-ink">{value}</div>
     </div>
   );
 }
@@ -169,17 +167,48 @@ export default function Hero() {
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,#0E0C0A_80%)]" />
       </motion.div>
 
-      {/* RIGHT COLUMN: vertical stats sidebar — single source in lib/stats.js */}
+      {/* RIGHT COLUMN: at-a-glance profile sidebar — role, experience, stack.
+          Achievement metrics live in the Experience section, not here. */}
       <motion.aside
-        className="hidden flex-col justify-center gap-8 border-l border-rule pl-6 lg:flex"
+        className="hidden min-h-0 flex-col justify-center gap-6 overflow-y-auto border-l border-rule pl-6 lg:flex"
         initial={{ opacity: 0, x: 12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
-        aria-label="Career stats"
+        aria-label="Profile"
       >
-        {STATS.map((s, i) => (
-          <StatBlock key={s.k} value={s.k} label={s.v} last={i === STATS.length - 1} />
-        ))}
+        {/* Headline years-of-experience number */}
+        <div>
+          <div className="font-serif text-5xl font-semibold leading-none text-ink">
+            {PROFILE.yoe}
+          </div>
+          <div className="mt-2 text-[11px] uppercase tracking-[0.25em] text-sand/60">
+            {PROFILE.yoeLabel}
+          </div>
+        </div>
+
+        {/* Role + focus + location as labeled rows */}
+        <div className="space-y-4 border-y border-rule py-5">
+          <ProfileRow label="Role" value={PROFILE.role} />
+          <ProfileRow label="Focus" value={PROFILE.focus} />
+          <ProfileRow label="Based" value={PROFILE.location} />
+        </div>
+
+        {/* Core stack as pill badges */}
+        <div>
+          <div className="mb-3 text-[11px] uppercase tracking-[0.25em] text-sand/60">
+            Core stack
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {PROFILE.stack.map((tech) => (
+              <span
+                key={tech}
+                className="rounded-full border border-rule bg-espresso-900/60 px-2.5 py-1 text-[11px] text-sand/80"
+              >
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
       </motion.aside>
     </section>
   );

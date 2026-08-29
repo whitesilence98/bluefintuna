@@ -15,15 +15,16 @@ import { Menu, X } from 'lucide-react';
  *   - Mobile: minimal fullscreen drawer
  */
 
-// Nav order matching the reference aesthetic.
+// Nav order mirrors the actual section order in app/page.js so the links
+// map 1:1 to what a visitor sees scrolling top→bottom.
 // Blog points to /#blog (homepage section), not /blog (blog index route).
 const NAV = [
-  { label: 'About Me', href: '/#about' },
   { label: 'Projects', href: '/#projects' },
   { label: 'Experience', href: '/#experience' },
   { label: 'Skills', href: '/#skills' },
   { label: 'Praise', href: '/#testimonials' },
   { label: 'Blog', href: '/#blog' },
+  { label: 'About', href: '/#about' },
   { label: 'Contact', href: '/#contact' },
 ];
 

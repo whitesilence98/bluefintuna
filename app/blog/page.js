@@ -5,12 +5,12 @@ import { getAllPosts, formatDate, tagClass } from '@/lib/posts';
 export const metadata = {
   title: 'Blog',
   description:
-    'Technical articles on ComfyUI workflows, AI image synthesis, LLM prompt engineering, and local model deployment by Tuan Nguyen.',
+    'Technical articles by Tuan Nguyen — React Server Components, Next.js architecture, LLM prompt engineering, and local model deployment.',
   alternates: { canonical: '/blog' },
   openGraph: {
     title: 'Tuan Nguyen — Blog',
     description:
-      'Technical articles on ComfyUI workflows, LLM prompt engineering, and local model deployment.',
+      'Technical articles on React/Next.js architecture, LLM prompt engineering, and local model deployment.',
     url: '/blog',
     type: 'website',
   },
@@ -45,7 +45,7 @@ export default function BlogIndex() {
           Writing
         </h1>
         <p className="mt-4 max-w-2xl text-lg text-sand/70">
-          Technical writing on ComfyUI pipelines, LLM engineering, and the
+          Technical writing on React architecture, LLM engineering, and the
           tools I build with. All posts are static — fast to read, easy to cite.
         </p>
       </header>

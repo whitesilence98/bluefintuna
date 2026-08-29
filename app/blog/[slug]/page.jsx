@@ -10,7 +10,7 @@ import {
 import MdxServer from '@/components/MdxServer.jsx';
 import TableOfContents from '@/components/TableOfContents.jsx';
 
-const siteUrl = 'https://tuannguyen.com';
+const siteUrl = 'https://bluefintuna.vercel.app';
 
 // Pipe-tagged category label (editorial style).
 function CategoryTag({ children }) {
@@ -65,8 +65,38 @@ export default function BlogPost({ params }) {
   const post = getPostBySlug(params?.slug);
   if (!post) notFound();
 
+  // JSON-LD Article schema for rich results. Pairs with the Person schema in
+  // the root layout (author references the same entity).
+  const articleLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      '@type': 'Person',
+      name: post.author,
+      url: siteUrl,
+    },
+    publisher: {
+      '@type': 'Person',
+      name: 'Tuan Nguyen',
+      url: siteUrl,
+    },
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': `${siteUrl}/blog/${post.slug}`,
+    },
+    keywords: post.tags.join(', '),
+  };
+
   return (
     <article className="mx-auto max-w-6xl px-6 py-16">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
+      />
       <Link
         href="/blog"
         className="mb-10 inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-champagne"
