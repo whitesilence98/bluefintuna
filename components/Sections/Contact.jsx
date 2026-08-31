@@ -171,7 +171,7 @@ export default function Contact() {
     <section
       id="contact"
       aria-label="Contact"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl flex-col px-6 py-20"
     >
       <div className="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-start">
         {/* Left: intro + quick facts + socials */}

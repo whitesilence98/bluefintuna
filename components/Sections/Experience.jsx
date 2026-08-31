@@ -200,7 +200,7 @@ export default function Experience() {
     <section
       id="experience"
       aria-label="Experience"
-      className="mx-auto flex max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex max-w-7xl flex-col justify-center px-6 py-20"
     >
       <div className="mb-10">
         <CategoryTag>Professional Experience</CategoryTag>

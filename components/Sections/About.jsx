@@ -18,7 +18,7 @@ export default function About() {
     <section
       id="about"
       aria-label="About"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl flex-col px-6 py-20"
     >
       <div className="grid gap-12 lg:grid-cols-[1.2fr_1fr] lg:items-center">
         <motion.div

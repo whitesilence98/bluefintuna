@@ -18,7 +18,7 @@ export default function BlogSection({ posts = [] }) {
     <section
       id="blog"
       aria-label="Blog"
-      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl scroll-mt-20 flex-col justify-center px-6 py-20"
+      className="mx-auto flex min-h-[calc(100vh-4rem)] max-w-7xl flex-col justify-center px-6 py-20"
     >
       <div className="mb-10 flex items-end justify-between gap-4">
         <div>

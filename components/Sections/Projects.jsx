@@ -179,7 +179,7 @@ export default function Projects() {
     <section
       id="projects"
       aria-label="Projects"
-      className="mx-auto flex max-w-7xl scroll-mt-20 flex-col px-6 py-20"
+      className="mx-auto flex max-w-7xl flex-col px-6 py-20"
     >
       <div className="mb-8">
         <CategoryTag>Selected Work</CategoryTag>

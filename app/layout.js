@@ -1,19 +1,20 @@
-import { Cormorant_Garamond } from 'next/font/google';
+import { Figtree } from 'next/font/google';
 import './globals.css';
 import ScrollProgress from '@/components/ScrollProgress';
 import Toaster from '@/components/Toaster';
 
-// Single typeface for the entire project. Cormorant Garamond is an editorial
-// serif that carries the espresso aesthetic at headline scale; we load a wide
-// weight range so body copy at 300–400 stays legible. All three font tokens
-// (sans/serif/display) map to it so existing utility classes keep working.
-// Self-hosted via next/font — no external runtime font request.
-const cormorant = Cormorant_Garamond({
+// Single typeface for the entire project. Figtree is an open-source geometric
+// humanist sans — the closest legitimate substitute for Google Sans (which is
+// proprietary and not licensed for third-party use). Legible at body sizes on
+// the dark espresso background and carries headlines at semibold/bold weights.
+// All three font tokens (sans/serif/display) map to it so existing utility
+// classes keep working without per-file edits. Self-hosted via next/font — no
+// external runtime font request.
+const figtree = Figtree({
   subsets: ['latin'],
   display: 'swap',
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-serif',
-  style: ['normal', 'italic'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-sans',
 });
 
 const siteUrl = 'https://bluefintuna.vercel.app';
@@ -146,7 +147,7 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className={cormorant.variable}>
+    <html lang="en" className={figtree.variable}>
       <body className="font-sans bg-espresso-950 text-ink antialiased">
         <script
           type="application/ld+json"

@@ -21,12 +21,13 @@ module.exports = {
         gold: '#D4AF37',
       },
       fontFamily: {
-        // Single typeface (Cormorant Garamond) for the whole project.
-        // All three tokens resolve to it so existing font-sans / font-serif /
-        // font-display classes keep working without per-file edits.
-        sans: ['var(--font-serif)', 'Georgia', 'serif'],
-        serif: ['var(--font-serif)', 'Georgia', 'serif'],
-        display: ['var(--font-serif)', 'Georgia', 'serif'],
+        // Single typeface (Inter) for the whole project. All three tokens
+        // resolve to var(--font-sans) (injected by next/font in app/layout.js)
+        // so existing font-sans / font-serif / font-display classes keep
+        // working without per-file edits.
+        sans: ['var(--font-sans)', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
+        serif: ['var(--font-sans)', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
+        display: ['var(--font-sans)', 'system-ui', 'Segoe UI', 'Roboto', 'sans-serif'],
         mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Consolas', 'monospace'],
       },
       keyframes: {
