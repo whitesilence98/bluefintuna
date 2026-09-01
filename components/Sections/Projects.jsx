@@ -1,45 +1,47 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Gauge, Lock, ExternalLink } from 'lucide-react';
+import { Gauge, Lock, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 
 // Professional work engagements. Most are under NDA — no public URLs or code
 // links exposed. Each card surfaces a project's name, a screenshot (drop a real
 // file at `image` under /public/projects/), a one-line tagline, an optional key
 // metric, and the tech stack. The "Confidential" chip makes the NDA context
 // explicit so recruiters don't expect a live link. A `live` URL is only set on
-// the NDA context explicit so recruiters don't expect a live link.
+// public projects.
 const PROJECTS = [
   {
-    title: 'Razer NPI Platform',
+    title: 'Hello Clever',
+    company: 'Hello Clever',
+    tagline: 'Fintech payments mobile app',
+    tags: ['Mobile', 'React Native', 'Fintech', 'Australia'],
+    desc: 'A mobile app for an Australian fintech payments platform that turns payments into business growth for merchants. Built the cross-platform React Native client against the platform’s payment APIs, with PCI/SOC-compliant flows and merchant-facing dashboards.',
+    metric: 'Live fintech app',
+    stack: ['React Native', 'TypeScript', 'Payments', 'API Integration'],
+    image: '/projects/hello-clever.png',
+    live: 'https://helloclever.co/',
+  },
+  {
+    title: 'Razer Synapse 4',
     company: 'Razer',
-    tagline: 'Modular microfrontends + desktop UI',
-    tags: ['Microfrontends', 'Electron', 'Next.js', 'Enterprise'],
-    desc: 'Decoupled deployments talking to underlying microservices across firmware, mechanical, and QA units for Razer’s New Product Introduction team.',
+    tagline: 'Desktop device-config platform',
+    tags: ['Desktop', 'Electron', 'Microfrontends', 'Enterprise'],
+    desc: 'Razer’s flagship desktop app for configuring and controlling Razer hardware — button remapping, macros, performance tuning, and Chroma effects across Windows and macOS. Built modular microfrontend UI mounted inside the Electron shell, decoupled deployments talking to underlying microservices across firmware, mechanical, and QA units.',
     metric: '25% faster cross-team delivery',
-    stack: ['Next.js', 'Electron', 'Microfrontends', 'NestJS'],
-    image: '/projects/razer-npi.png',
+    stack: ['Electron', 'Next.js', 'Microfrontends', 'NestJS'],
+    image: '/projects/razer-synapse-4.png',
+    live: 'https://www.razer.com/synapse-4',
   },
   {
     title: 'LLM-Assisted Debugging Tooling',
     company: 'Razer',
-    tagline: 'Internal AI tools for engineering velocity',
-    tags: ['AI', 'Ollama', 'Claude', 'Internal Tools'],
-    desc: 'Local-model (Ollama, Claude) tooling for automated log analysis and debugging — built to lift engineering velocity and code maintainability across the team.',
+    tagline: 'Internal AI tooling for engineering velocity',
+    tags: ['AI', 'Claude', 'Internal Tools', 'Tooling'],
+    desc: 'An internal tool built for Razer’s engineering org to automate log analysis and accelerate debugging. Implemented as a set of Claude skills — modular prompt-driven workflows — that triage errors, suggest fixes, and lift team-wide debugging velocity and code maintainability.',
     metric: 'Team-wide debugging speedup',
-    stack: ['Ollama', 'Claude', 'TypeScript', 'Prompt Engineering'],
+    stack: ['Claude', 'Prompt Engineering', 'TypeScript', 'Tooling'],
     image: '/projects/llm-debug-tooling.png',
-  },
-  {
-    title: 'Cross-Platform Mobile Apps',
-    company: 'Rexy Technology',
-    tagline: 'iOS + Android from a shared core',
-    tags: ['Mobile', 'React Native', 'GraphQL', 'AWS'],
-    desc: 'iOS + Android apps with shared core business logic and API clients abstracted from the web platform, accelerating feature delivery across surfaces.',
-    metric: 'Shared core → faster feature ship',
-    stack: ['React Native', 'GraphQL', 'AWS SDK', 'Cognito'],
-    image: '/projects/cross-platform-mobile.png',
   },
   {
     title: 'Optimized Data Layer',
@@ -105,16 +107,18 @@ function CategoryTag({ children }) {
 }
 
 // Skeleton card shown for a beat while the grid settles / filters animate.
+// Matches the real card's fixed width + height behavior so the rail doesn't
+// shift when content swaps in.
 function CardSkeleton() {
   return (
-    <div className="overflow-hidden rounded-2xl border border-rule bg-espresso-900/60">
+    <div className="flex h-full w-[80vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-rule bg-espresso-900/60 sm:w-[420px]">
       <div className="skeleton aspect-[16/9] w-full" />
-      <div className="p-7">
+      <div className="flex flex-1 flex-col p-6">
         <div className="skeleton h-3 w-24 rounded-full" />
-        <div className="skeleton mt-4 h-6 w-2/3 rounded" />
-        <div className="skeleton mt-4 h-16 w-full rounded" />
-        <div className="skeleton mt-4 h-4 w-1/2 rounded-full" />
-        <div className="mt-6 flex gap-2">
+        <div className="skeleton mt-3 h-6 w-2/3 rounded" />
+        <div className="skeleton mt-3 h-16 w-full rounded" />
+        <div className="skeleton mt-3 h-4 w-1/2 rounded-full" />
+        <div className="mt-4 flex gap-2">
           <div className="skeleton h-6 w-16 rounded-full" />
           <div className="skeleton h-6 w-16 rounded-full" />
         </div>
@@ -134,7 +138,12 @@ function ProjectCard({ p, i }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: 12, transition: { duration: 0.15 } }}
       transition={{ duration: 0.45, delay: i * 0.05 }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-rule bg-espresso-900/60 transition-colors hover:border-champagne/40"
+      // Fixed width so adjacent cards peek out of the viewport on every
+      // breakpoint, signalling the rail is scrollable. snap-start aligns
+      // cards to the left edge when the user scrolls. h-full + the rail's
+      // items-stretch equalize all card heights to the tallest in the row.
+      data-card
+      className="group relative flex h-full w-[80vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-rule bg-espresso-900/60 transition-colors hover:border-champagne/40 sm:w-[420px]"
     >
       {/* Image slot — 16:9. Shows a real screenshot when `image` exists in
           /public/projects/, otherwise a branded gradient + project monogram
@@ -174,11 +183,11 @@ function ProjectCard({ p, i }) {
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col p-7">
+      <div className="flex flex-1 flex-col p-6">
         <span className="text-[11px] uppercase tracking-[0.3em] text-champagne/70">
           {p.tagline}
         </span>
-        <h3 className="mt-4 font-serif text-2xl font-semibold text-ink">
+        <h3 className="mt-3 font-serif text-2xl font-semibold text-ink">
           {p.title}
         </h3>
         {/* Company chip — makes the employer context explicit. */}
@@ -189,14 +198,14 @@ function ProjectCard({ p, i }) {
 
         {/* Key metric */}
         {p.metric && (
-          <p className="mt-5 inline-flex items-center gap-2 text-sm font-medium text-ink">
+          <p className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-ink">
             <Gauge size={15} className="text-champagne/80" />
             {p.metric}
           </p>
         )}
 
         {/* Tech badges */}
-        <div className="mt-5 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {p.stack.map((s) => (
             <span
               key={s}
@@ -211,7 +220,7 @@ function ProjectCard({ p, i }) {
             projects). NDA-locked cards have no footer, so nothing looks
             broken or like a missing link. */}
         {p.live && (
-          <div className="mt-6 flex items-center border-t border-rule pt-5">
+          <div className="mt-5 flex items-center border-t border-rule pt-4">
             <a
               href={p.live}
               target="_blank"
@@ -227,11 +236,34 @@ function ProjectCard({ p, i }) {
   );
 }
 
+// Scroll the rail by roughly one card width. Used by the arrow buttons so the
+// rail is navigable without a drag-capable pointer (desktop / keyboard users).
+function scrollByCard(rail, dir) {
+  if (!rail.current) return;
+  const card = rail.current.querySelector('[data-card]');
+  const step = card ? card.offsetWidth + 24 : 420; // 24 = gap-6
+  rail.current.scrollBy({ left: dir * step, behavior: 'smooth' });
+}
+
 export default function Projects() {
   const [active, setActive] = useState('All');
   const [loading, setLoading] = useState(false);
+  const railRef = useRef(null);
 
-  // Simulate a brief skeleton flash on filter change so the grid communicates
+  // Translate vertical wheel/trackpad scrolling into horizontal rail scrolling
+  // — the browser's native horizontal scroll only fires on shift+wheel, which
+  // nobody discovers. We only redirect when the gesture is mostly vertical so
+  // a genuine horizontal trackpad swipe still works natively. This keeps the
+  // rail fully on native scroll momentum (no JS position setting), which is
+  // why it stays smooth — we only nudge the input, never the output.
+  function onWheel(e) {
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      e.preventDefault();
+      railRef.current.scrollLeft += e.deltaY;
+    }
+  }
+
+  // Simulate a brief skeleton flash on filter change so the rail communicates
   // state change (and demonstrates the skeleton) without a real network hop.
   function selectTag(tag) {
     if (tag === active) return;
@@ -254,23 +286,47 @@ export default function Projects() {
       aria-label="Work Projects"
       className="mx-auto flex max-w-7xl flex-col px-6 py-20"
     >
-      <div className="mb-8">
-        <CategoryTag>Professional Work</CategoryTag>
-        <motion.h2
-          className="grunge-text mt-5 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-80px' }}
-          transition={{ duration: 0.5 }}
-        >
-          Work Projects
-        </motion.h2>
-        <p className="mt-3 max-w-2xl text-sand/70">
-          Global-scale web, desktop, and mobile systems shipped for enterprise
-          brands — and the AI tooling that keeps the team fast behind them.
-          These are professional engagements under NDA, so links and source
-          aren't shared publicly.
-        </p>
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-x-6 gap-y-4">
+        <div>
+          <CategoryTag>Professional Work</CategoryTag>
+          <motion.h2
+            className="grunge-text mt-5 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-80px' }}
+            transition={{ duration: 0.5 }}
+          >
+            Work Projects
+          </motion.h2>
+          <p className="mt-3 max-w-2xl text-sand/70">
+            Global-scale web, desktop, and mobile systems shipped for enterprise
+            brands — and the AI tooling that keeps the team fast behind them.
+            These are professional engagements under NDA, so links and source
+            aren&apos;t shared publicly.
+          </p>
+        </div>
+
+        {/* Arrow controls — desktop only. Visible at sm+ where a drag surface
+            is less discoverable. Hidden on mobile, where native touch scroll
+            is the natural interaction. */}
+        <div className="hidden gap-2 sm:flex">
+          <button
+            type="button"
+            onClick={() => scrollByCard(railRef, -1)}
+            aria-label="Scroll projects left"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-espresso-900/60 text-sand/80 transition-colors hover:border-champagne/40 hover:text-ink"
+          >
+            <ChevronLeft size={18} />
+          </button>
+          <button
+            type="button"
+            onClick={() => scrollByCard(railRef, 1)}
+            aria-label="Scroll projects right"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-espresso-900/60 text-sand/80 transition-colors hover:border-champagne/40 hover:text-ink"
+          >
+            <ChevronRight size={18} />
+          </button>
+        </div>
       </div>
 
       {/* Tag filter row */}
@@ -293,9 +349,19 @@ export default function Projects() {
         })}
       </div>
 
-      <div className="grid gap-6 sm:grid-cols-2">
+      {/* Horizontal rail. Native scroll + scroll-snap-proximity gives the
+          smoothest feel (no JS position-setting fighting momentum). onWheel
+          redirects vertical trackpad/wheel input so the rail is scrollable
+          without shift+wheel. items-stretch + h-full on cards equalizes card
+          heights to the tallest in the row. */}
+      <div
+        ref={railRef}
+        onWheel={onWheel}
+        className="no-scrollbar flex snap-x snap-mandatory items-stretch gap-6 overflow-x-auto overscroll-x-contain pb-2 [scroll-padding-left:0] [scroll-padding-right:24px] [touch-action:pan-x]"
+      >
         {loading ? (
           <>
+            <CardSkeleton />
             <CardSkeleton />
             <CardSkeleton />
           </>

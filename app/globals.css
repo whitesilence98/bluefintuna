@@ -11,6 +11,16 @@
   box-sizing: border-box;
 }
 
+/* Hide horizontal scrollbar on the project rail without losing scroll/snap.
+   Used by the Projects section's horizontal list view. */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
