@@ -2,9 +2,54 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ---------------------------------------------------------------------------
+   Theme palette — space-separated RGB channels consumed by the Tailwind
+   tokens in tailwind.config.js (rgb(var(--c-ink) / <alpha-value>), etc).
+   DARK is the default: <html> is SSR'd with the .dark class (see
+   app/layout.js), and the no-flash script removes it when the stored
+   preference is 'light'. The light palette lives on :root as the base.
+--------------------------------------------------------------------------- */
 :root {
-  --background: #0E0C0A; /* espresso-950 — matches Tailwind token */
-  --foreground: #F5F2EC; /* ink — matches Tailwind token */
+  /* Ambient radial wash: bright white core fading to a soft mint/cyan edge. */
+  --background: radial-gradient(circle at 50% 50%, #ffffff 0%, #ecfaf8 55%, #cffaf4 100%);
+  --foreground: 15 23 42; /* ink — slate-900 */
+
+  --c-ink: 15 23 42;         /* headings / primary text — slate-900 */
+  --c-sand: 71 85 105;       /* body copy — slate-600 */
+  --c-rule: 226 232 240;    /* borders / dividers — slate-200 */
+  --c-card: 255 255 255;    /* translucent card surface (used with /70 etc) */
+  --c-mist: 232 245 242;     /* soft mint chip/tint surface */
+  --c-lavender: 232 238 255; /* alert card / toast surface — periwinkle */
+  --c-accent: 13 148 136;    /* primary accent / CTAs — teal-600 */
+  --c-accent-deep: 15 118 110; /* hover accent — teal-700 */
+  --c-pre: 248 250 252;      /* code block surface — slate-50 */
+  --c-skeleton: 238 244 242; /* skeleton base */
+  --c-shimmer: rgba(13, 148, 136, 0.08);
+  --c-grunge: rgba(13, 148, 136, 0.08);
+  /* Fallback image-slot gradient stops (Projects) */
+  --c-grad-a: 232 245 242;
+  --c-grad-b: 207 250 244;
+}
+
+.dark {
+  --background: #0e0c0a; /* espresso-950 — flat, the original dark base */
+  --foreground: 245 242 236; /* ink — warm ivory */
+
+  --c-ink: 245 242 236;      /* warm ivory */
+  --c-sand: 196 188 179;    /* muted beige */
+  --c-rule: 46 41 36;       /* subtle warm borders */
+  --c-card: 20 17 14;       /* espresso-900 card surface */
+  --c-mist: 27 23 20;       /* espresso-800 — chip surface */
+  --c-lavender: 20 17 14;   /* espresso-950 — banner surface */
+  --c-accent: 197 160 89;   /* champagne/gold */
+  --c-accent-deep: 212 175 55; /* gold hover */
+  --c-pre: 14 12 10;        /* espresso-950 code block */
+  --c-skeleton: 20 17 14;    /* espresso-900 skeleton */
+  --c-shimmer: rgba(197, 160, 89, 0.06);
+  --c-grunge: rgba(0, 0, 0, 0.55);
+  /* Fallback image-slot gradient stops (Projects) */
+  --c-grad-a: 27 23 20;
+  --c-grad-b: 46 41 36;
 }
 
 * {
@@ -27,24 +72,27 @@ html {
 }
 
 body {
-  background-color: var(--background);
-  color: var(--foreground);
-  font-weight: 400; /* Cormorant reads cleanly at body sizes; lighter weights get thin */
+  background: var(--background);
+  background-attachment: fixed;
+  color: rgb(var(--foreground));
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
-/* Subtle grunge/ink grain behind typography */
+/* Soft accent halo behind headlines (light) / dark grunge grain (dark). */
 .grunge-text {
+  text-shadow: 0 2px 18px var(--c-grunge);
+}
+.dark .grunge-text {
   text-shadow:
     0 0 1px rgba(233, 231, 225, 0.35),
-    0 2px 18px rgba(0, 0, 0, 0.55);
+    0 2px 18px var(--c-grunge);
 }
 
 /* Canvas wrapper should never cause layout shift */
 .canvas-slot {
-  /* position: relative; */
   isolation: isolate;
 }
 
@@ -62,24 +110,19 @@ body {
   }
 }
 
-/* Espresso shimmer skeleton — used by lazy-loaded sections while hydrating.
-   Warm, low-contrast, loops without a JS driver. */
+/* Shimmer skeleton — used by lazy-loaded sections while hydrating.
+   Uses theme channels so both palettes work; loops without a JS driver. */
 .skeleton {
   position: relative;
   overflow: hidden;
-  background-color: #14110e;
+  background-color: rgb(var(--c-skeleton));
 }
 .skeleton::after {
   content: '';
   position: absolute;
   inset: 0;
   transform: translateX(-100%);
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(197, 160, 89, 0.06) 50%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg, transparent 0%, var(--c-shimmer) 50%, transparent 100%);
   animation: skeleton-shimmer 1.6s ease-in-out infinite;
 }
 @keyframes skeleton-shimmer {

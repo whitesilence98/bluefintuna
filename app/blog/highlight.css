@@ -1,4 +1,4 @@
-/* GitHub-dark inspired theme for rehype-highlight (hljs tokens).
+/* GitHub-light inspired theme for rehype-highlight (hljs tokens).
    Kept small: only the token classes rehype-highlight emits. */
 
 /* Inline code wrapping on mobile — prevents horizontal overflow when
@@ -22,13 +22,15 @@ pre code {
   white-space: pre;
 }
 
+/* Light (default): GitHub-light inspired. Dark: the original GitHub-dark
+   espresso-era palette returns under .dark. */
 .hljs {
-  color: #c9d1d9;
+  color: #24292f;
   background: transparent;
 }
 .hljs-comment,
 .hljs-quote {
-  color: #8b949e;
+  color: #6a737d;
   font-style: italic;
 }
 .hljs-keyword,
@@ -36,50 +38,104 @@ pre code {
 .hljs-literal,
 .hljs-type,
 .hljs-name {
-  color: #ff7b72;
+  color: #cf222e;
 }
 .hljs-string,
 .hljs-doctag,
 .hljs-regexp,
 .hljs-meta .hljs-string {
-  color: #a5d6ff;
+  color: #0a3069;
 }
 .hljs-title,
 .hljs-section,
 .hljs-title.function_ {
-  color: #d2a8ff;
+  color: #8250df;
 }
 .hljs-attr,
 .hljs-attribute,
 .hljs-variable,
 .hljs-template-variable,
 .hljs-property {
-  color: #79c0ff;
+  color: #0550ae;
 }
 .hljs-number,
 .hljs-symbol,
 .hljs-bullet,
 .hljs-link {
-  color: #f0883e;
+  color: #953800;
 }
 .hljs-built_in,
 .hljs-builtin-name {
-  color: #ffa657;
+  color: #e16f24;
 }
 .hljs-meta {
-  color: #8b949e;
+  color: #6a737d;
 }
 .hljs-deletion {
-  color: #ffdcd7;
-  background: #67060c;
+  color: #82071e;
+  background: #ffebe9;
 }
 .hljs-addition {
-  color: #aff5b4;
-  background: #033a16;
+  color: #116329;
+  background: #dafbe1;
 }
 .hljs-emphasis {
   font-style: italic;
 }
 .hljs-strong {
   font-weight: 700;
+}
+/* ----- Dark theme (original GitHub-dark palette) ----- */
+.dark .hljs {
+  color: #c9d1d9;
+}
+.dark .hljs-comment,
+.dark .hljs-quote {
+  color: #8b949e;
+}
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-literal,
+.dark .hljs-type,
+.dark .hljs-name {
+  color: #ff7b72;
+}
+.dark .hljs-string,
+.dark .hljs-doctag,
+.dark .hljs-regexp,
+.dark .hljs-meta .hljs-string {
+  color: #a5d6ff;
+}
+.dark .hljs-title,
+.dark .hljs-section,
+.dark .hljs-title.function_ {
+  color: #d2a8ff;
+}
+.dark .hljs-attr,
+.dark .hljs-attribute,
+.dark .hljs-variable,
+.dark .hljs-template-variable,
+.dark .hljs-property {
+  color: #79c0ff;
+}
+.dark .hljs-number,
+.dark .hljs-symbol,
+.dark .hljs-bullet,
+.dark .hljs-link {
+  color: #f0883e;
+}
+.dark .hljs-built_in,
+.dark .hljs-builtin-name {
+  color: #ffa657;
+}
+.dark .hljs-meta {
+  color: #8b949e;
+}
+.dark .hljs-deletion {
+  color: #ffdcd7;
+  background: #67060c;
+}
+.dark .hljs-addition {
+  color: #aff5b4;
+  background: #033a16;
 }

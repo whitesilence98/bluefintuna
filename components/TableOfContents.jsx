@@ -54,10 +54,10 @@ export default function TableOfContents() {
 
   return (
     <nav aria-label="Table of contents" className="text-sm">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-white/40">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-[0.25em] text-sand/60">
         On this page
       </p>
-      <ul className="space-y-2 border-l border-white/10">
+      <ul className="space-y-2 border-l border-rule">
         {headings.map((h) => (
           <li key={h.id} className={h.level === 3 ? 'ml-3' : ''}>
             <a
@@ -65,8 +65,8 @@ export default function TableOfContents() {
               className={
                 'block border-l-2 px-3 -ml-px transition-colors ' +
                 (activeId === h.id
-                  ? 'border-ink text-ink'
-                  : 'border-transparent text-white/50 hover:text-white/80')
+                  ? 'border-accent text-ink'
+                  : 'border-transparent text-sand/70 hover:text-ink')
               }
             >
               {h.text}

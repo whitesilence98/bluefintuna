@@ -3,10 +3,27 @@ import './globals.css';
 import ScrollProgress from '@/components/ScrollProgress';
 import Toaster from '@/components/Toaster';
 
+// No-flash theme bootstrap. Runs before paint: <html> is SSR'd WITH the
+// `dark` class (dark is the site default), so this script only needs to
+// REMOVE it when the stored preference is 'light'. Kept inline + tiny so the
+// class settles on <html> before the first styled frame renders. Note:
+// this must never load React — it is deliberately plain JS inside
+// dangerouslySetInnerHTML.
+const themeScript = `
+(function () {
+  try {
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    }
+  } catch (e) {}
+})();
+`;
+
 // Single typeface for the entire project. Figtree is an open-source geometric
 // humanist sans — the closest legitimate substitute for Google Sans (which is
 // proprietary and not licensed for third-party use). Legible at body sizes on
-// the dark espresso background and carries headlines at semibold/bold weights.
+// both the light ambient and dark espresso backgrounds, and carries headlines
+// at semibold/bold weights.
 // All three font tokens (sans/serif/display) map to it so existing utility
 // classes keep working without per-file edits. Self-hosted via next/font — no
 // external runtime font request.
@@ -147,8 +164,11 @@ export default function RootLayout({ children }) {
   };
 
   return (
-    <html lang="en" className={figtree.variable}>
-      <body className="font-sans bg-espresso-950 text-ink antialiased">
+    <html lang="en" className={`dark ${figtree.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+      </head>
+      <body className="min-h-screen font-sans text-ink antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}

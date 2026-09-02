@@ -83,29 +83,29 @@ function TimelineCard({ role, index, isOpen, onToggle }) {
       {/* Timeline node */}
       <span
         aria-hidden
-        className="absolute -left-[33px] top-2 flex h-3.5 w-3.5 items-center rounded-full border border-champagne bg-espresso-950 sm:-left-[41px]"
+        className="absolute -left-[33px] top-2 flex h-3.5 w-3.5 items-center rounded-full border border-accent bg-card sm:-left-[41px]"
       >
-        <span className="h-1.5 w-1.5 rounded-full bg-champagne" />
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
       </span>
 
       <div
-        className={`group rounded-2xl border bg-espresso-900/60 p-6 transition-colors sm:p-7 ${
-          isOpen ? 'border-champagne/40' : 'border-rule hover:border-champagne/25'
+        className={`group rounded-2xl border bg-card/70 p-6 shadow-[0_2px_16px_rgba(15,23,42,0.04)] transition-colors sm:p-7 dark:shadow-none ${
+          isOpen ? 'border-accent/40' : 'border-rule hover:border-accent/25'
         }`}
       >
         <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
           <div className="flex items-center gap-2.5">
-            <Icon size={16} strokeWidth={1.5} className="text-champagne/80" />
+            <Icon size={16} strokeWidth={1.5} className="text-accent" />
             <h3 className="font-serif text-2xl font-semibold text-ink">
               {role.company}
             </h3>
           </div>
-          <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-champagne/80">
+          <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-accent/90">
             {role.period}
           </span>
         </div>
         {role.client && (
-          <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-sand/50">
+          <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-sand/60">
             {role.client}
           </p>
         )}
@@ -124,7 +124,7 @@ function TimelineCard({ role, index, isOpen, onToggle }) {
                 <div className="font-serif text-2xl font-semibold leading-none text-ink">
                   {m.value}
                 </div>
-                <div className="mt-1 text-[10px] uppercase tracking-[0.25em] text-sand/55">
+                <div className="mt-1 text-[10px] uppercase tracking-[0.25em] text-sand/70">
                   {m.label}
                 </div>
               </div>
@@ -138,7 +138,7 @@ function TimelineCard({ role, index, isOpen, onToggle }) {
             {role.stack.map((s) => (
               <span
                 key={s}
-                className="rounded-full border border-rule bg-espresso-950/50 px-2.5 py-1 text-[11px] text-sand/80"
+                className="rounded-full border border-rule bg-mist/80 px-2.5 py-1 text-[11px] text-sand"
               >
                 {s}
               </span>
@@ -152,7 +152,7 @@ function TimelineCard({ role, index, isOpen, onToggle }) {
             <button
               onClick={onToggle}
               aria-expanded={isOpen}
-              className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-champagne/80 transition-colors hover:text-champagne"
+              className="mt-5 inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.2em] text-accent/90 transition-colors hover:text-accent-deep"
             >
               {isOpen ? 'Hide details' : 'Read details'}
               <motion.span animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
@@ -177,7 +177,7 @@ function TimelineCard({ role, index, isOpen, onToggle }) {
                       >
                         <span
                           aria-hidden
-                          className="mt-2 h-1 w-1 shrink-0 rounded-full bg-champagne/70"
+                          className="mt-2 h-1 w-1 shrink-0 rounded-full bg-accent/70"
                         />
                         {p}
                       </p>
@@ -238,25 +238,25 @@ export default function Experience() {
           {EDUCATION.map((e, i) => (
             <motion.div
               key={e.school}
-              className="rounded-2xl border border-rule bg-espresso-900/60 p-6"
+              className="rounded-2xl border border-rule bg-card/70 p-6 shadow-[0_2px_16px_rgba(15,23,42,0.04)] dark:shadow-none"
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-60px' }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
             >
               <div className="flex items-center gap-2.5">
-                <GraduationCap size={16} strokeWidth={1.5} className="text-champagne/80" />
+                <GraduationCap size={16} strokeWidth={1.5} className="text-accent" />
                 <h3 className="font-serif text-xl font-semibold text-ink">
                   {e.school}
                 </h3>
               </div>
               <div className="mt-2 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
                 <p className="text-sm text-sand">{e.degree}</p>
-                <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-champagne/80">
+                <span className="text-[11px] font-medium uppercase tracking-[0.25em] text-accent/90">
                   {e.period}
                 </span>
               </div>
-              <p className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-sand/55">
+              <p className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-sand/60">
                 <MapPin size={12} /> {e.location}
               </p>
             </motion.div>

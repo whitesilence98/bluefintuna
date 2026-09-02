@@ -35,7 +35,7 @@ export default function BlogIndex() {
     <div className="mx-auto max-w-5xl px-6 py-16">
       <Link
         href="/#blog"
-        className="mb-8 inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-champagne"
+        className="mb-8 inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-accent"
       >
         <ArrowLeft size={15} /> Back to home
       </Link>

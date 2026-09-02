@@ -6,10 +6,10 @@
 
 export function Alert({ type = 'info', children }) {
   const palette = {
-    info: 'border-sky-500/30 bg-sky-500/5 text-sky-100',
-    tip: 'border-emerald-500/30 bg-emerald-500/5 text-emerald-100',
-    warn: 'border-amber-500/30 bg-amber-500/5 text-amber-100',
-  }[type] || 'border-white/15 bg-white/5 text-white/85';
+    info: 'border-indigo-200 bg-indigo-50/80 text-slate-700 dark:border-sky-500/30 dark:bg-sky-500/5 dark:text-sky-100',
+    tip: 'border-teal-200 bg-teal-50/80 text-slate-700 dark:border-emerald-500/30 dark:bg-emerald-500/5 dark:text-emerald-100',
+    warn: 'border-amber-200 bg-amber-50/80 text-slate-700 dark:border-amber-500/30 dark:bg-amber-500/5 dark:text-amber-100',
+  }[type] || 'border-indigo-200 bg-indigo-50/80 text-slate-700 dark:border-sky-500/30 dark:bg-sky-500/5 dark:text-sky-100';
 
   const label = { info: 'Note', tip: 'Tip', warn: 'Heads up' }[type] || 'Note';
 
@@ -27,7 +27,7 @@ export function Alert({ type = 'info', children }) {
 
 export function Code({ children }) {
   return (
-    <code className="rounded bg-white/10 px-1.5 py-0.5 font-mono text-[0.85em] text-ink">
+    <code className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[0.85em] text-ink dark:bg-white/10">
       {children}
     </code>
   );

@@ -38,8 +38,8 @@ export default function BlogFilters({ posts }) {
               onClick={() => setActive(t)}
               className={`rounded-full border px-4 py-1.5 text-xs font-medium uppercase tracking-[0.15em] transition-colors ${
                 on
-                  ? 'border-champagne bg-champagne/15 text-champagne'
-                  : 'border-rule bg-espresso-900/60 text-sand/70 hover:border-champagne/40 hover:text-ink'
+                  ? 'border-accent bg-accent/10 text-accent-deep'
+                  : 'border-rule bg-card/70 text-sand hover:border-accent/40 hover:text-ink'
               }`}
             >
               {t}
@@ -76,7 +76,7 @@ export default function BlogFilters({ posts }) {
                 <h2 className="mt-3 font-serif text-2xl font-semibold sm:text-3xl">
                   <Link
                     href={`/blog/${post.slug}`}
-                    className="text-ink transition-colors hover:text-champagne"
+                    className="text-ink transition-colors hover:text-accent"
                   >
                     {post.title}
                   </Link>
@@ -84,7 +84,7 @@ export default function BlogFilters({ posts }) {
 
                 <p className="mt-2 max-w-2xl text-sand/70">{post.excerpt}</p>
 
-                <div className="mt-4 flex items-center gap-3 text-xs text-sand/50">
+                <div className="mt-4 flex items-center gap-3 text-xs text-sand/60">
                   <time dateTime={post.date}>{formatDate(post.date)}</time>
                   <span aria-hidden>·</span>
                   <span className="inline-flex items-center gap-1">
@@ -94,7 +94,7 @@ export default function BlogFilters({ posts }) {
 
                 <Link
                   href={`/blog/${post.slug}`}
-                  className="mt-4 inline-flex items-center gap-1 text-sm text-champagne/80 transition-transform group-hover:translate-x-1"
+                  className="mt-4 inline-flex items-center gap-1 text-sm text-accent transition-transform group-hover:translate-x-1"
                 >
                   Read article →
                 </Link>
@@ -105,7 +105,7 @@ export default function BlogFilters({ posts }) {
       </ul>
 
       {filtered.length === 0 && (
-        <p className="py-12 text-center text-sm text-sand/50">
+        <p className="py-12 text-center text-sm text-sand/60">
           No posts under this tag yet.
         </p>
       )}

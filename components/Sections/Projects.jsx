@@ -3,6 +3,7 @@
 import { useMemo, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Gauge, Lock, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
+import useIsDark from '@/lib/use-is-dark';
 
 // Professional work engagements. Most are under NDA — no public URLs or code
 // links exposed. Each card surfaces a project's name, a screenshot (drop a real
@@ -68,22 +69,32 @@ const PROJECTS = [
 
 const ALL_TAGS = ['All', ...Array.from(new Set(PROJECTS.flatMap((p) => p.tags)))];
 
-// Deterministic warm gradient keyed off the project title, used as the image
+// Deterministic gradient keyed off the project title, used as the image
 // slot fallback before a real screenshot is dropped into /public/projects/.
-// Two-stop espresso → champagne wash, unique per project but always on-brand.
-const FALLBACK_GRADIENTS = [
-  'linear-gradient(135deg, #1B1714 0%, #2E2924 50%, #C5A059 140%)',
-  'linear-gradient(135deg, #14110E 0%, #241F1A 55%, #D4AF37 160%)',
-  'linear-gradient(135deg, #0E0C0A 0%, #2E2924 60%, #C5A059 150%)',
-  'linear-gradient(135deg, #1B1714 0%, #241F1A 45%, #D4AF37 130%)',
-];
+// Two-stop mist → teal wash on light, espresso → champagne on dark —
+// unique per project but always on-brand.
+const FALLBACK_GRADIENTS = {
+  light: [
+    'linear-gradient(135deg, #E8F5F2 0%, #CFFAF4 50%, #0D9488 140%)',
+    'linear-gradient(135deg, #ECFAF8 0%, #D6F0EA 55%, #0F766E 160%)',
+    'linear-gradient(135deg, #E8EEFF 0%, #CFFAF4 60%, #0D9488 150%)',
+    'linear-gradient(135deg, #E8F5F2 0%, #D6F0EA 45%, #14B8A6 130%)',
+  ],
+  dark: [
+    'linear-gradient(135deg, #1B1714 0%, #2E2924 50%, #C5A059 140%)',
+    'linear-gradient(135deg, #14110E 0%, #241F1A 55%, #D4AF37 160%)',
+    'linear-gradient(135deg, #0E0C0A 0%, #2E2924 60%, #C5A059 150%)',
+    'linear-gradient(135deg, #1B1714 0%, #241F1A 45%, #D4AF37 130%)',
+  ],
+};
 
-function projectFallback(title) {
+function projectFallback(title, dark) {
   let hash = 0;
   for (let i = 0; i < title.length; i += 1) {
     hash = (hash * 31 + title.charCodeAt(i)) | 0;
   }
-  return FALLBACK_GRADIENTS[Math.abs(hash) % FALLBACK_GRADIENTS.length];
+  const set = dark ? FALLBACK_GRADIENTS.dark : FALLBACK_GRADIENTS.light;
+  return set[Math.abs(hash) % set.length];
 }
 
 function CategoryTag({ children }) {
@@ -101,7 +112,7 @@ function CategoryTag({ children }) {
 // shift when content swaps in.
 function CardSkeleton() {
   return (
-    <div className="flex h-full w-[80vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-rule bg-espresso-900/60 sm:w-[420px]">
+    <div className="flex h-full w-[80vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-rule bg-card/70 sm:w-[420px]">
       <div className="skeleton aspect-[16/9] w-full" />
       <div className="flex flex-1 flex-col p-6">
         <div className="skeleton h-3 w-24 rounded-full" />
@@ -118,7 +129,8 @@ function CardSkeleton() {
 }
 
 function ProjectCard({ p, i }) {
-  const fallback = projectFallback(p.title);
+  const dark = useIsDark();
+  const fallback = projectFallback(p.title, dark);
   const monogram = p.title.charAt(0);
 
   return (
@@ -133,7 +145,7 @@ function ProjectCard({ p, i }) {
       // cards to the left edge when the user scrolls. h-full + the rail's
       // items-stretch equalize all card heights to the tallest in the row.
       data-card
-      className="group relative flex h-full w-[80vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-rule bg-espresso-900/60 transition-colors hover:border-champagne/40 sm:w-[420px]"
+      className="group relative flex h-full w-[80vw] shrink-0 snap-start flex-col overflow-hidden rounded-2xl border border-rule bg-card/70 shadow-[0_2px_16px_rgba(15,23,42,0.04)] transition-colors hover:border-accent/40 sm:w-[420px] dark:shadow-none"
     >
       {/* Image slot — 16:9. Shows a real screenshot when `image` exists in
           /public/projects/, otherwise a branded gradient + project monogram
@@ -161,27 +173,27 @@ function ProjectCard({ p, i }) {
           aria-hidden
           className="pointer-events-none absolute inset-0 flex items-center justify-center"
         >
-          <span className="font-serif text-6xl font-semibold text-ink/15">
+          <span className="font-serif text-6xl font-semibold text-ink/10 dark:text-ink/15">
             {monogram}
           </span>
         </div>
 
         {/* Confidential / NDA chip — always visible, top-right. */}
-        <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-rule/70 bg-espresso-950/80 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-sand/80 backdrop-blur-sm">
-          <Lock size={11} className="text-champagne/80" />
+        <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full border border-rule/70 bg-card/85 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.2em] text-slate-700 backdrop-blur-sm dark:bg-[#0E0C0A]/80 dark:text-sand/80">
+          <Lock size={11} className="text-accent" />
           Confidential
         </span>
       </div>
 
       <div className="flex flex-1 flex-col p-6">
-        <span className="text-[11px] uppercase tracking-[0.3em] text-champagne/70">
+        <span className="text-[11px] uppercase tracking-[0.3em] text-accent/80">
           {p.tagline}
         </span>
         <h3 className="mt-3 font-serif text-2xl font-semibold text-ink">
           {p.title}
         </h3>
         {/* Company chip — makes the employer context explicit. */}
-        <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-sand/55">
+        <p className="mt-1.5 text-xs uppercase tracking-[0.2em] text-sand/70">
           {p.company}
         </p>
         <p className="mt-3 flex-1 text-sm leading-relaxed text-sand/70">{p.desc}</p>
@@ -189,7 +201,7 @@ function ProjectCard({ p, i }) {
         {/* Key metric */}
         {p.metric && (
           <p className="mt-4 inline-flex items-center gap-2 text-sm font-medium text-ink">
-            <Gauge size={15} className="text-champagne/80" />
+            <Gauge size={15} className="text-accent" />
             {p.metric}
           </p>
         )}
@@ -199,7 +211,7 @@ function ProjectCard({ p, i }) {
           {p.stack.map((s) => (
             <span
               key={s}
-              className="rounded-full border border-rule bg-espresso-950/50 px-2.5 py-1 text-[11px] text-sand/80"
+              className="rounded-full border border-rule bg-mist/80 px-2.5 py-1 text-[11px] text-sand"
             >
               {s}
             </span>
@@ -215,7 +227,7 @@ function ProjectCard({ p, i }) {
               href={p.live}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 text-sm text-champagne/90 transition-colors hover:text-champagne"
+              className="inline-flex items-center gap-1.5 text-sm text-accent transition-colors hover:text-accent-deep"
             >
               <ExternalLink size={15} /> Live site
             </a>
@@ -304,7 +316,7 @@ export default function Projects() {
             type="button"
             onClick={() => scrollByCard(railRef, -1)}
             aria-label="Scroll projects left"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-espresso-900/60 text-sand/80 transition-colors hover:border-champagne/40 hover:text-ink"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-card/70 text-sand transition-colors hover:border-accent/40 hover:text-ink"
           >
             <ChevronLeft size={18} />
           </button>
@@ -312,7 +324,7 @@ export default function Projects() {
             type="button"
             onClick={() => scrollByCard(railRef, 1)}
             aria-label="Scroll projects right"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-espresso-900/60 text-sand/80 transition-colors hover:border-champagne/40 hover:text-ink"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-card/70 text-sand transition-colors hover:border-accent/40 hover:text-ink"
           >
             <ChevronRight size={18} />
           </button>
@@ -329,8 +341,8 @@ export default function Projects() {
               onClick={() => selectTag(t)}
               className={`rounded-full border px-4 py-1.5 text-xs font-medium uppercase tracking-[0.15em] transition-colors ${
                 on
-                  ? 'border-champagne bg-champagne/15 text-champagne'
-                  : 'border-rule bg-espresso-900/60 text-sand/70 hover:border-champagne/40 hover:text-ink'
+                  ? 'border-accent bg-accent/10 text-accent-deep'
+                  : 'border-rule bg-card/70 text-sand hover:border-accent/40 hover:text-ink'
               }`}
             >
               {t}

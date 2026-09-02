@@ -9,7 +9,7 @@ import { formatDate, tagClass } from '@/lib/blog-helpers';
  * BlogSection
  * Homepage grid of recent technical articles. Pure presentational —
  * receives posts from the server component (app/page.js).
- * One viewport on desktop; espresso palette; serif headline.
+ * One viewport on desktop; ambient light palette; serif headline.
  */
 export default function BlogSection({ posts = [] }) {
   if (!posts.length) return null;
@@ -43,7 +43,7 @@ export default function BlogSection({ posts = [] }) {
         </div>
         <Link
           href="/blog"
-          className="hidden shrink-0 items-center gap-1 text-sm text-sand/70 transition-colors hover:text-champagne sm:inline-flex"
+          className="hidden shrink-0 items-center gap-1 text-sm text-sand/70 transition-colors hover:text-accent sm:inline-flex"
         >
           All posts
           <ArrowUpRight size={15} />
@@ -80,7 +80,7 @@ function PostCard({ post }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex h-full flex-col rounded-2xl border border-rule bg-espresso-900/60 p-6 transition-colors hover:border-champagne/40"
+      className="group flex h-full flex-col rounded-2xl border border-rule bg-card/70 p-6 shadow-[0_2px_16px_rgba(15,23,42,0.04)] transition-colors hover:border-accent/40 dark:shadow-none"
     >
       <div className="flex flex-wrap gap-2">
         {post.tags.map((t) => (
@@ -109,7 +109,7 @@ function PostCard({ post }) {
         </span>
       </div>
 
-      <span className="mt-5 inline-flex items-center gap-1 text-sm text-champagne/80 transition-transform group-hover:translate-x-1">
+      <span className="mt-5 inline-flex items-center gap-1 text-sm text-accent transition-transform group-hover:translate-x-1">
         Read article
         <ArrowUpRight size={15} />
       </span>

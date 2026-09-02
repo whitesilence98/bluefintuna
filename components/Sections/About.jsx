@@ -31,7 +31,7 @@ export default function About() {
           <h2 className="grunge-text mt-5 font-serif text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
             The seam that
             <br />
-            <span className="text-champagne">speeds teams up</span>
+            <span className="text-accent">speeds teams up</span>
           </h2>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-sand">
             I focus on the integration boundary — the place where modular web and
@@ -57,7 +57,7 @@ export default function About() {
           {STATS.map((s) => (
             <li
               key={s.v}
-              className="rounded-2xl border border-rule bg-espresso-900/60 p-6"
+              className="rounded-2xl border border-rule bg-card/70 p-6 shadow-[0_2px_16px_rgba(15,23,42,0.04)] dark:shadow-none"
             >
               <div className="font-serif text-3xl font-semibold text-ink">
                 {s.k}

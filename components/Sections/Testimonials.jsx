@@ -49,7 +49,7 @@ function Avatar({ name }) {
     .join('')
     .toUpperCase();
   return (
-    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-champagne/30 bg-espresso-950 font-serif text-sm font-semibold text-champagne">
+    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-accent/30 bg-card font-serif text-sm font-semibold text-accent">
       {initials || '··'}
     </div>
   );
@@ -86,7 +86,7 @@ export default function Testimonials() {
           aria-hidden
           size={48}
           strokeWidth={1}
-          className="mx-auto mb-6 text-champagne/30"
+          className="mx-auto mb-6 text-accent/30"
         />
 
         <div className="relative min-h-[220px] sm:min-h-[200px]">
@@ -108,7 +108,7 @@ export default function Testimonials() {
                   <div className="font-serif text-base font-semibold text-ink">
                     {t.name}
                   </div>
-                  <div className="text-xs uppercase tracking-[0.15em] text-sand/55">
+                  <div className="text-xs uppercase tracking-[0.15em] text-sand/70">
                     {t.title}
                   </div>
                 </div>
@@ -122,7 +122,7 @@ export default function Testimonials() {
           <button
             onClick={() => go(-1)}
             aria-label="Previous testimonial"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule text-sand/70 transition-colors hover:border-champagne/50 hover:text-champagne"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-card/70 text-sand transition-colors hover:border-accent/50 hover:text-accent"
           >
             <ChevronLeft size={18} />
           </button>
@@ -133,7 +133,7 @@ export default function Testimonials() {
                 onClick={() => setIdx(i)}
                 aria-label={`Go to testimonial ${i + 1}`}
                 className={`h-1.5 rounded-full transition-all ${
-                  i === idx ? 'w-6 bg-champagne' : 'w-1.5 bg-rule hover:bg-sand/40'
+                  i === idx ? 'w-6 bg-accent' : 'w-1.5 bg-rule hover:bg-sand/40'
                 }`}
               />
             ))}
@@ -141,13 +141,13 @@ export default function Testimonials() {
           <button
             onClick={() => go(1)}
             aria-label="Next testimonial"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule text-sand/70 transition-colors hover:border-champagne/50 hover:text-champagne"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-rule bg-card/70 text-sand transition-colors hover:border-accent/50 hover:text-accent"
           >
             <ChevronRight size={18} />
           </button>
         </div>
 
-        <p className="mt-8 text-center text-xs text-sand/40">
+        <p className="mt-8 text-center text-xs text-sand/60">
           Placeholder quotes — real recommendations coming soon.
         </p>
       </div>

@@ -99,7 +99,7 @@ export default function BlogPost({ params }) {
       />
       <Link
         href="/blog"
-        className="mb-10 inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-champagne"
+        className="mb-10 inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-accent"
       >
         <ArrowLeft size={15} /> All posts
       </Link>
@@ -120,14 +120,14 @@ export default function BlogPost({ params }) {
         <h1 className="grunge-text mt-5 font-serif text-4xl font-semibold leading-tight tracking-tight text-ink sm:text-5xl">
           {post.title}
         </h1>
-        <div className="mt-5 flex items-center gap-4 text-sm text-sand/60">
+        <div className="mt-5 flex items-center gap-4 text-sm text-sand/70">
           <span className="inline-flex items-center gap-1.5">
-            <Calendar size={14} strokeWidth={1.5} className="text-champagne/80" /> {formatDate(post.date)}
+            <Calendar size={14} strokeWidth={1.5} className="text-accent" /> {formatDate(post.date)}
           </span>
           <span className="inline-flex items-center gap-1.5">
-            <Clock size={14} strokeWidth={1.5} className="text-champagne/80" /> {post.readTime} min read
+            <Clock size={14} strokeWidth={1.5} className="text-accent" /> {post.readTime} min read
           </span>
-          <span className="text-sand/60">by {post.author}</span>
+          <span className="text-sand/70">by {post.author}</span>
         </div>
       </header>
 
@@ -135,7 +135,7 @@ export default function BlogPost({ params }) {
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_220px]">
         <div
           id="article-body"
-          className="prose prose-invert max-w-full overflow-hidden prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-pre:bg-[#0E0C0A] prose-pre:border prose-pre:border-rule prose-code:break-words"
+          className="prose max-w-full overflow-hidden prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-pre:border prose-pre:border-rule prose-code:break-words"
         >
           <MdxServer source={post.content} />
         </div>
@@ -151,7 +151,7 @@ export default function BlogPost({ params }) {
       <div className="mt-16 border-t border-rule pt-8">
         <Link
           href="/blog"
-          className="inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-champagne"
+          className="inline-flex items-center gap-1.5 text-sm text-sand/70 transition-colors hover:text-accent"
         >
           <ArrowLeft size={15} /> Back to all posts
         </Link>

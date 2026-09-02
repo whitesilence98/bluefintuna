@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
   content: [
     './app/**/*.{js,jsx}',
     './components/**/*.{js,jsx}',
@@ -8,20 +9,22 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        espresso: {
-          950: '#0E0C0A', // base background — deep warm espresso
-          900: '#14110E',
-          800: '#1B1714',
-          700: '#241F1A',
-        },
-        ink: '#F5F2EC',        // primary text — warm ivory
-        sand: '#C4BCB3',       // body copy — muted beige
-        rule: '#2E2924',        // subtle warm borders / dividers
-        champagne: '#C5A059',   // primary button fill — champagne/gold
-        gold: '#D4AF37',
+        // All theme colors are defined as CSS channel variables (space-
+        // separated R G B) declared in app/globals.css — light values on
+        // :root, dark (original espresso) values under .dark. The
+        // <alpha-value> placeholder means every opacity modifier
+        // (bg-accent/40, text-ink/15, …) keeps working in both themes.
+        ink: 'rgb(var(--c-ink) / <alpha-value>)',
+        sand: 'rgb(var(--c-sand) / <alpha-value>)',
+        rule: 'rgb(var(--c-rule) / <alpha-value>)',
+        card: 'rgb(var(--c-card) / <alpha-value>)',
+        mist: 'rgb(var(--c-mist) / <alpha-value>)',
+        lavender: 'rgb(var(--c-lavender) / <alpha-value>)',
+        accent: 'rgb(var(--c-accent) / <alpha-value>)',
+        'accent-deep': 'rgb(var(--c-accent-deep) / <alpha-value>)',
       },
       fontFamily: {
-        // Single typeface (Inter) for the whole project. All three tokens
+        // Single typeface (Figtree) for the whole project. All three tokens
         // resolve to var(--font-sans) (injected by next/font in app/layout.js)
         // so existing font-sans / font-serif / font-display classes keep
         // working without per-file edits.
@@ -39,30 +42,30 @@ module.exports = {
       animation: {
         floaty: 'floaty 6s ease-in-out infinite',
       },
-      typography: {
+      typography: () => ({
         DEFAULT: {
           css: {
-            '--tw-prose-body': '#C4BCB3',
-            '--tw-prose-headings': '#F5F2EC',
-            '--tw-prose-links': '#C5A059',
-            '--tw-prose-bold': '#F5F2EC',
-            '--tw-prose-code': '#F5F2EC',
-            '--tw-prose-quotes': '#C4BCB3',
-            '--tw-prose-quote-borders': '#2E2924',
-            '--tw-prose-bullets': '#2E2924',
-            '--tw-prose-hr': '#2E2924',
-            '--tw-prose-th-borders': '#2E2924',
-            '--tw-prose-td-borders': '#2E2924',
+            '--tw-prose-body': 'rgb(var(--c-sand))',
+            '--tw-prose-headings': 'rgb(var(--c-ink))',
+            '--tw-prose-links': 'rgb(var(--c-accent))',
+            '--tw-prose-bold': 'rgb(var(--c-ink))',
+            '--tw-prose-code': 'rgb(var(--c-ink))',
+            '--tw-prose-quotes': 'rgb(var(--c-sand))',
+            '--tw-prose-quote-borders': 'rgb(var(--c-accent))',
+            '--tw-prose-bullets': 'rgb(var(--c-rule))',
+            '--tw-prose-hr': 'rgb(var(--c-rule))',
+            '--tw-prose-th-borders': 'rgb(var(--c-rule))',
+            '--tw-prose-td-borders': 'rgb(var(--c-rule))',
             maxWidth: 'none',
             a: {
               textDecoration: 'underline',
-              textDecorationColor: 'rgba(197,160,89,0.45)',
+              textDecorationColor: 'rgb(var(--c-accent) / 0.4)',
               textUnderlineOffset: '3px',
               fontWeight: '500',
             },
-            'a:hover': { textDecorationColor: 'rgba(197,160,89,0.9)' },
+            'a:hover': { textDecorationColor: 'rgb(var(--c-accent) / 0.9)' },
             code: {
-              background: 'rgba(245,242,236,0.06)',
+              background: 'rgb(var(--c-rule) / 0.45)',
               padding: '0.15em 0.4em',
               borderRadius: '0.3rem',
               fontWeight: '500',
@@ -70,8 +73,8 @@ module.exports = {
               '&::after': { content: '""' },
             },
             pre: {
-              background: '#0E0C0A',
-              border: '1px solid #2E2924',
+              background: 'rgb(var(--c-pre))',
+              border: '1px solid rgb(var(--c-rule))',
               borderRadius: '0.75rem',
               padding: '1.1rem 1.25rem',
               overflowX: 'auto',
@@ -86,7 +89,7 @@ module.exports = {
             },
           },
         },
-      },
+      }),
     },
   },
   plugins: [require('@tailwindcss/typography')],

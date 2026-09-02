@@ -53,14 +53,14 @@ export default function Skills() {
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.4, delay: i * 0.04 }}
           >
-            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-champagne/80">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.25em] text-accent/90">
               {g.label}
             </p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {g.items.map((s) => (
                 <span
                   key={s}
-                  className="rounded-full border border-rule bg-espresso-900/60 px-3 py-1 text-xs text-sand"
+                  className="rounded-full border border-rule bg-card/70 px-3 py-1 text-xs text-sand"
                 >
                   {s}
                 </span>

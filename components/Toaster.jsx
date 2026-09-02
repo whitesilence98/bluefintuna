@@ -11,8 +11,14 @@ import { subscribe, dismiss } from '@/lib/toast';
  * Decoupled from whatever triggers a toast — see lib/toast.js.
  */
 const TONE = {
-  info: { ring: 'border-rule', icon: <Info size={14} className="text-sand/70" /> },
-  success: { ring: 'border-champagne/40', icon: <Check size={14} className="text-champagne" /> },
+  info: {
+    ring: 'border-indigo-200 dark:border-rule',
+    icon: <Info size={14} className="text-slate-500 dark:text-sand/70" />,
+  },
+  success: {
+    ring: 'border-teal-300 dark:border-accent/40',
+    icon: <Check size={14} className="text-accent" />,
+  },
 };
 
 export default function Toaster() {
@@ -35,14 +41,14 @@ export default function Toaster() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, x: 24, transition: { duration: 0.2 } }}
             transition={{ type: 'spring', stiffness: 380, damping: 30 }}
-            className={`pointer-events-auto flex items-center gap-3 rounded-xl border bg-espresso-900/95 px-4 py-3 text-sm text-ink shadow-[0_8px_30px_-8px_rgba(0,0,0,0.7)] backdrop-blur ${TONE[t.tone]?.ring || TONE.info.ring}`}
+            className={`pointer-events-auto flex items-center gap-3 rounded-xl border bg-lavender/95 px-4 py-3 text-sm text-slate-700 shadow-[0_8px_30px_-8px_rgba(15,23,42,0.18)] backdrop-blur dark:bg-[#14110E]/95 dark:text-ink dark:shadow-[0_8px_30px_-8px_rgba(0,0,0,0.7)] ${TONE[t.tone]?.ring || TONE.info.ring}`}
           >
             <span className="shrink-0">{TONE[t.tone]?.icon || TONE.info.icon}</span>
             <span className="flex-1 leading-snug">{t.message}</span>
             <button
               onClick={() => dismiss(t.id)}
               aria-label="Dismiss"
-              className="shrink-0 text-sand/50 transition-colors hover:text-ink"
+              className="shrink-0 text-slate-400 transition-colors hover:text-slate-700 dark:text-sand/50 dark:hover:text-ink"
             >
               <X size={14} strokeWidth={2} />
             </button>

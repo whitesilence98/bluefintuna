@@ -38,9 +38,9 @@ function CopyEmailButton() {
     <button
       onClick={copy}
       aria-label="Copy email to clipboard"
-      className="shrink-0 text-sand/50 transition-colors hover:text-champagne"
+      className="shrink-0 text-sand/60 transition-colors hover:text-accent"
     >
-      {copied ? <Check size={14} strokeWidth={2.5} className="text-champagne" /> : <Copy size={14} />}
+      {copied ? <Check size={14} strokeWidth={2.5} className="text-accent" /> : <Copy size={14} />}
     </button>
   );
 }
@@ -86,12 +86,12 @@ function Field({ id, label, type = 'text', value, onChange, error, touched, text
         placeholder={placeholder}
         aria-invalid={!!showError}
         aria-describedby={showError ? `${id}-err` : undefined}
-        className={`peer w-full rounded-xl border bg-espresso-950/50 px-4 pt-6 pb-2 text-sm text-ink outline-none transition-colors placeholder:text-transparent focus:bg-espresso-950/80 ${
+        className={`peer w-full rounded-xl border bg-card/80 px-4 pt-6 pb-2 text-sm text-ink outline-none transition-colors placeholder:text-transparent focus:bg-card ${
           showError
-            ? 'border-red-400/60 focus:border-red-400'
+            ? 'border-red-400/70 focus:border-red-500 dark:border-red-400/60 dark:focus:border-red-400'
             : showSuccess
-              ? 'border-champagne/50'
-              : 'border-rule focus:border-champagne/50'
+              ? 'border-accent/50'
+              : 'border-rule focus:border-accent/60'
         } ${textarea ? 'min-h-[140px] resize-y' : ''}`}
       />
       <label
@@ -100,12 +100,12 @@ function Field({ id, label, type = 'text', value, onChange, error, touched, text
           hasValue
             ? '-translate-y-2 text-[10px] uppercase tracking-[0.2em]'
             : 'top-4 text-sm'
-        } ${showError ? 'text-red-300/80' : showSuccess ? 'text-champagne/80' : 'text-sand/60 peer-focus:text-champagne/80'}`}
+        } ${showError ? 'text-red-500/80 dark:text-red-300/80' : showSuccess ? 'text-accent' : 'text-sand/70 peer-focus:text-accent'}`}
       >
         {label}
       </label>
       {showError && (
-        <p id={`${id}-err`} className="mt-1.5 flex items-center gap-1 text-xs text-red-300/90">
+        <p id={`${id}-err`} className="mt-1.5 flex items-center gap-1 text-xs text-red-500 dark:text-red-300/90">
           <AlertCircle size={12} /> {error}
         </p>
       )}
@@ -196,17 +196,17 @@ export default function Contact() {
 
           <ul className="mt-8 space-y-3 text-sm text-sand">
             <li className="inline-flex items-center gap-2.5">
-              <MapPin size={15} strokeWidth={1.5} className="text-champagne/80" /> {CONTACT.location}
+              <MapPin size={15} strokeWidth={1.5} className="text-accent" /> {CONTACT.location}
             </li>
             <li className="flex items-center gap-2.5">
-              <Phone size={15} strokeWidth={1.5} className="text-champagne/80" />
-              <a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`} className="hover:text-champagne">
+              <Phone size={15} strokeWidth={1.5} className="text-accent" />
+              <a href={`tel:${CONTACT.phone.replace(/\s/g, '')}`} className="hover:text-accent">
                 {CONTACT.phone}
               </a>
             </li>
             <li className="flex items-center gap-2.5">
-              <Mail size={15} strokeWidth={1.5} className="text-champagne/80" />
-              <a href={`mailto:${CONTACT.email}`} className="hover:text-champagne">
+              <Mail size={15} strokeWidth={1.5} className="text-accent" />
+              <a href={`mailto:${CONTACT.email}`} className="hover:text-accent">
                 {CONTACT.email}
               </a>
               <CopyEmailButton />
@@ -221,7 +221,7 @@ export default function Contact() {
                   target={href.startsWith('mailto') ? undefined : '_blank'}
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="text-sand/70 transition-colors hover:text-champagne"
+                  className="text-sand/70 transition-colors hover:text-accent"
                 >
                   <Icon size={20} strokeWidth={1.75} />
                 </a>
@@ -238,7 +238,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="rounded-3xl border border-rule bg-espresso-900/50 p-6 sm:p-8"
+          className="rounded-3xl border border-rule bg-card/70 p-6 shadow-[0_4px_24px_rgba(15,23,42,0.05)] sm:p-8 dark:bg-[#14110E]/50 dark:shadow-none"
         >
           <div className="grid gap-5 sm:grid-cols-2">
             <div>
@@ -296,11 +296,11 @@ export default function Contact() {
           <button
             type="submit"
             disabled={submitting}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-champagne px-7 py-3.5 text-sm font-semibold text-espresso-950 transition-all hover:bg-gold hover:shadow-[0_0_24px_-4px_rgba(197,160,89,0.5)] disabled:cursor-not-allowed disabled:opacity-60"
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-accent px-7 py-3.5 text-sm font-semibold text-white transition-all hover:bg-accent-deep hover:shadow-[0_0_24px_-4px_rgba(13,148,136,0.45)] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {submitting ? (
               <>
-                <span className="h-4 w-4 animate-spin rounded-full border-2 border-espresso-950/40 border-t-espresso-950" />
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white/40 border-t-white" />
                 Opening mail client…
               </>
             ) : sent ? (
@@ -313,7 +313,7 @@ export default function Contact() {
               </>
             )}
           </button>
-          <p className="mt-3 text-center text-xs text-sand/45">
+          <p className="mt-3 text-center text-xs text-sand/60">
             Opens your email client with the message prefilled — no data stored.
           </p>
         </motion.form>

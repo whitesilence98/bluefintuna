@@ -24,7 +24,7 @@ function CanvasSkeleton() {
       <div className="absolute inset-0 flex items-center justify-center">
         <div className="relative h-44 w-44">
           <div className="absolute inset-0 rounded-full border border-rule" />
-          <div className="absolute inset-0 rounded-full border-t border-champagne/60 animate-spin [animation-duration:1.2s]" />
+          <div className="absolute inset-0 rounded-full border-t border-accent/60 animate-spin [animation-duration:1.2s]" />
           <div className="absolute inset-0 flex items-center justify-center">
             <span className="text-[10px] uppercase tracking-[0.3em] text-sand/60">
               Loading 3D
@@ -66,10 +66,11 @@ export default function Hero() {
       aria-label="Hero"
       className="relative mx-auto flex max-w-7xl flex-col gap-8 px-6 py-20 lg:h-[calc(100vh-4rem)] lg:grid lg:grid-cols-[1.05fr_1.2fr_0.5fr] lg:items-stretch lg:gap-8 lg:overflow-hidden"
     >
-      {/* Ambient warm radial spotlight behind the center 3D character. */}
+      {/* Ambient spotlight behind the center 3D character — cool mint on
+          light, warm champagne on dark. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,rgba(197,160,89,0.12),transparent_70%)]"
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,rgba(13,148,136,0.08),transparent_70%)] dark:bg-[radial-gradient(ellipse_60%_50%_at_50%_45%,rgba(197,160,89,0.12),transparent_70%)]"
       />
 
       {/* LEFT COLUMN: badge, editorial title, description, CTAs, sub-metadata. */}
@@ -84,7 +85,7 @@ export default function Hero() {
         <h1 className="grunge-text mt-6 font-serif text-5xl font-semibold leading-[1.02] tracking-tight text-ink sm:text-6xl lg:text-[4.25rem]">
           Engineering
           <br />
-          <span className="text-champagne">enterprise-scale</span> systems
+          <span className="text-accent">enterprise-scale</span> systems
         </h1>
 
         {/* Elevator pitch: value proposition in two sentences — no title words,
@@ -96,12 +97,12 @@ export default function Hero() {
           part that speeds teams up.
         </p>
 
-        {/* Dual CTA: champagne primary + dark ghost secondary. */}
+        {/* Dual CTA: teal primary + light ghost secondary. */}
         <div className="mt-9 flex flex-wrap items-center gap-4">
           <MagneticButton strength={14}>
             <a
               href="#projects"
-              className="group inline-flex items-center gap-2 rounded-full bg-champagne px-7 py-3 text-sm font-semibold text-espresso-950 transition-all hover:bg-gold hover:shadow-[0_0_24px_-4px_rgba(197,160,89,0.5)]"
+              className="group inline-flex items-center gap-2 rounded-full bg-accent px-7 py-3 text-sm font-semibold text-white transition-all hover:bg-accent-deep hover:shadow-[0_0_24px_-4px_rgba(13,148,136,0.45)]"
             >
               View Work
               <ArrowUpRight
@@ -114,7 +115,7 @@ export default function Hero() {
           <MagneticButton strength={10}>
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 rounded-full border border-rule px-7 py-3 text-sm font-semibold text-ink transition-colors hover:border-champagne/60 hover:text-champagne"
+              className="inline-flex items-center gap-2 rounded-full border border-rule bg-card/60 px-7 py-3 text-sm font-semibold text-ink transition-colors hover:border-accent/60 hover:text-accent"
             >
               Get in touch
             </a>
@@ -126,7 +127,7 @@ export default function Hero() {
           <a
             href="mailto:98tuannguyen@gmail.com"
             aria-label="Email"
-            className="text-sand/70 transition-colors hover:text-champagne"
+            className="text-sand/70 transition-colors hover:text-accent"
           >
             <Mail size={20} strokeWidth={1.75} />
           </a>
@@ -135,7 +136,7 @@ export default function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="text-sand/70 transition-colors hover:text-champagne"
+            className="text-sand/70 transition-colors hover:text-accent"
           >
             <Github size={20} strokeWidth={1.75} />
           </a>
@@ -144,7 +145,7 @@ export default function Hero() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="text-sand/70 transition-colors hover:text-champagne"
+            className="text-sand/70 transition-colors hover:text-accent"
           >
             <Linkedin size={20} strokeWidth={1.75} />
           </a>
@@ -163,8 +164,9 @@ export default function Hero() {
             {/* <Character3D /> */}
           </Suspense>
         </div>
-        {/* Warm espresso vignette so the character sits in the lit space. */}
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,#0E0C0A_80%)]" />
+        {/* Vignette so the character sits inside the ambient wash — mint
+            edge on light, espresso edge on dark. */}
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,#CFFAF4_80%)] dark:bg-[radial-gradient(circle_at_center,transparent_55%,#0E0C0A_80%)]" />
       </motion.div>
 
       {/* RIGHT COLUMN: at-a-glance profile sidebar — role, experience, stack.
@@ -202,7 +204,7 @@ export default function Hero() {
             {PROFILE.stack.map((tech) => (
               <span
                 key={tech}
-                className="rounded-full border border-rule bg-espresso-900/60 px-2.5 py-1 text-[11px] text-sand/80"
+                className="rounded-full border border-rule bg-card/70 px-2.5 py-1 text-[11px] text-sand"
               >
                 {tech}
               </span>

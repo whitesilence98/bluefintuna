@@ -4,12 +4,13 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import ThemeToggle from '@/components/ThemeToggle';
 
 /**
  * Navbar
  * ------
  * Minimal editorial header matching the reference:
- *   - Left: small gold emblem only (no brand text)
+ *   - Left: small teal emblem only (no brand text)
  *   - Right: small all-caps tracked-out links
  *   - At rest: full-width, transparent
  *   - On scroll: shrinks into a centered floating pill (blur + border)
@@ -41,7 +42,7 @@ const NAV = [
 // decelerating linearly.
 const EASE = [0.22, 1, 0.36, 1];
 
-// Minimal geometric emblem — small, subtle, gold.
+// Minimal geometric emblem — small, subtle, teal.
 function Emblem({ className = '' }) {
   return (
     <svg
@@ -56,7 +57,7 @@ function Emblem({ className = '' }) {
         fill="currentColor"
         opacity="0.9"
       />
-      <circle cx="12" cy="11" r="1.5" fill="#0E0C0A" opacity="0.6" />
+      <circle cx="12" cy="11" r="1.5" fill="#0E0C0A" opacity="0.6" className="dark:fill-white dark:opacity-85" />
     </svg>
   );
 }
@@ -170,7 +171,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration, ease: EASE }}
-              className="absolute inset-0 rounded-full border border-rule/60 bg-espresso-950/85 shadow-[0_8px_32px_rgba(0,0,0,0.4)] backdrop-blur-md"
+              className="absolute inset-0 rounded-2xl border border-rule bg-white/80 shadow-[0_8px_32px_rgba(15,23,42,0.08)] backdrop-blur-md dark:bg-[#14110E]/85 dark:shadow-[0_8px_32px_rgba(0,0,0,0.4)]"
             />
           )}
         </AnimatePresence>
@@ -178,7 +179,7 @@ export default function Navbar() {
         {/* Left: emblem */}
         <Link
           href="/#home"
-          className="relative text-champagne transition-opacity hover:opacity-80"
+          className="relative text-accent transition-opacity hover:opacity-80"
           aria-label="Tuan Nguyen — home"
         >
           <motion.span
@@ -190,29 +191,35 @@ export default function Navbar() {
           </motion.span>
         </Link>
 
-        {/* Right: nav links (desktop) */}
+        {/* Right (desktop): nav links + theme toggle; Mobile: toggle + hamburger. */}
+        <div className="relative flex items-center gap-1 md:hidden">
+          <ThemeToggle />
+          <button
+            className="flex items-center text-sand transition-colors hover:text-ink"
+            aria-label="Open menu"
+            aria-expanded={open}
+            onClick={() => setOpen(true)}
+          >
+            <Menu size={18} strokeWidth={1.5} />
+          </button>
+        </div>
+
+        {/* Right (desktop): nav links + theme toggle */}
         <ul className="relative hidden items-center gap-10 md:flex">
           {NAV.map((item) => (
             <li key={item.href}>
               <Link
                 href={item.href}
-                className="text-[10px] font-medium uppercase tracking-[0.3em] text-[#C4BCB3] transition-colors hover:text-[#F5F2EC]"
+                className="text-[10px] font-medium uppercase tracking-[0.3em] text-sand transition-colors hover:text-ink"
               >
                 {item.label}
               </Link>
             </li>
           ))}
+          <li>
+            <ThemeToggle />
+          </li>
         </ul>
-
-        {/* Mobile hamburger */}
-        <button
-          className="relative flex items-center text-[#C4BCB3] transition-colors hover:text-ink md:hidden"
-          aria-label="Open menu"
-          aria-expanded={open}
-          onClick={() => setOpen(true)}
-        >
-          <Menu size={18} strokeWidth={1.5} />
-        </button>
       </motion.nav>
 
       {/* Mobile fullscreen drawer */}
@@ -228,7 +235,7 @@ export default function Navbar() {
             {/* Backdrop */}
             <div
               onClick={() => setOpen(false)}
-              className="absolute inset-0 bg-[#0E0C0A]/90 backdrop-blur-sm"
+              className="absolute inset-0 bg-white/85 backdrop-blur-sm dark:bg-[#0E0C0A]/90"
             />
 
             {/* Panel */}
@@ -243,7 +250,7 @@ export default function Navbar() {
               aria-label="Menu"
             >
               <button
-                className="absolute right-6 top-6 text-[#C4BCB3] transition-colors hover:text-ink"
+                className="absolute right-6 top-6 text-sand transition-colors hover:text-ink"
                 aria-label="Close menu"
                 onClick={() => setOpen(false)}
               >
@@ -255,7 +262,7 @@ export default function Navbar() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ delay: 0.1 }}
               >
-                <Emblem className="mb-12 h-8 w-8 text-champagne" />
+                <Emblem className="mb-12 h-8 w-8 text-accent" />
               </motion.div>
 
               <ul className="flex flex-col items-center gap-7">
@@ -269,7 +276,7 @@ export default function Navbar() {
                     <Link
                       href={item.href}
                       onClick={() => setOpen(false)}
-                      className="text-xs font-medium uppercase tracking-[0.35em] text-[#C4BCB3] transition-colors hover:text-[#F5F2EC]"
+                      className="text-xs font-medium uppercase tracking-[0.35em] text-sand transition-colors hover:text-ink"
                     >
                       {item.label}
                     </Link>
