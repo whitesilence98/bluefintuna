@@ -1,6 +1,27 @@
 /* GitHub-dark inspired theme for rehype-highlight (hljs tokens).
    Kept small: only the token classes rehype-highlight emits. */
 
+/* Inline code wrapping on mobile — prevents horizontal overflow when
+   code snippets or long identifiers exceed the viewport width. */
+:not(pre) > code {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 100%;
+  display: inline-block;
+}
+
+/* Pre blocks (syntax-highlighted code) scroll horizontally on mobile
+   instead of forcing the page to overflow. */
+pre,
+pre code {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  word-break: normal;
+  white-space: pre;
+}
+
 .hljs {
   color: #c9d1d9;
   background: transparent;

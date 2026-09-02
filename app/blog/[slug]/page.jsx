@@ -92,7 +92,7 @@ export default function BlogPost({ params }) {
   };
 
   return (
-    <article className="mx-auto max-w-6xl px-6 py-16">
+    <article className="mx-auto max-w-6xl w-full min-w-0 px-4 py-16 sm:px-6">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleLd) }}
@@ -131,11 +131,11 @@ export default function BlogPost({ params }) {
         </div>
       </header>
 
-      {/* Body + TOC */}
+      {/* Body + TOC — single column on mobile, two columns on lg. */}
       <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_220px]">
         <div
           id="article-body"
-          className="prose prose-invert max-w-none prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-pre:bg-[#0E0C0A] prose-pre:border prose-pre:border-rule"
+          className="prose prose-invert max-w-full overflow-hidden prose-headings:font-serif prose-headings:font-semibold prose-headings:tracking-tight prose-pre:bg-[#0E0C0A] prose-pre:border prose-pre:border-rule prose-code:break-words"
         >
           <MdxServer source={post.content} />
         </div>
